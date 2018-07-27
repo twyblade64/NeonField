@@ -44,18 +44,8 @@ public class GridRenderSystem : ComponentSystem {
 
       var meshIsReady = mesh.vertexCount > 0;
 
-      //Debug.Log("Mesh: "+ mesh.vertices.Length +" "+mesh.normals.Length+" "+mesh.triangles.Length);
-
       mesh.vertices = render.Vertices;
       mesh.normals = render.Normals; 
-
-      /*StringBuilder str = new StringBuilder();
-      for (int n = 0; n < mesh.vertices.Length; ++n) {
-        str.Append(" ");
-        str.Append(mesh.vertices[n].ToString());
-      }*/
-      //Debug.Log("Vertices "+str.ToString());
-
 
       if (mesh.triangles.Length == 0) {
         Debug.Log("Creating tris!");

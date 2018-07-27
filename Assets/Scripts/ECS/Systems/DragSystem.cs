@@ -9,11 +9,11 @@ using UnityEngine;
 [UpdateAfter(typeof(VelocityMovementSystem))]
 public class ForceInertiaSystem : JobComponentSystem {
   [BurstCompile]
-  struct ForceInertiaJob : IJobProcessComponentData<Velocity, Drag> {
+  struct ForceInertiaJob : IJobProcessComponentData<Velocity, Damper> {
     public float deltaTime;
 
-    public void Execute(ref Velocity vel, [ReadOnly] ref Drag drag) {
-      vel = new Velocity { Value = vel.Value * drag.Value };
+    public void Execute(ref Velocity vel, [ReadOnly] ref Damper damper) {
+      vel = new Velocity { Value = vel.Value * damper.Value };
     }
   }
 

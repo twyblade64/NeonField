@@ -25,7 +25,7 @@ public struct Velocity : IComponentData {
 }
 
 [Serializable]
-public struct Drag : IComponentData {
+public struct Damper : IComponentData {
 	public float Value;
 }
 

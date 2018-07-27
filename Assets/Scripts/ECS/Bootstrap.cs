@@ -27,7 +27,7 @@ public sealed class Bootstrap : MonoBehaviour {
 
     NodeArchetype = entityManager.CreateArchetype(
       typeof(Position), typeof(Anchor), typeof(Velocity), 
-      typeof(Physical), typeof(Drag), typeof(Elasticity),
+      typeof(Physical), typeof(Damper), typeof(Elasticity),
       typeof(GridPosition), typeof(GridRender),
       typeof(TransformMatrix) //, typeof(MeshInstanceRenderer)
     );
@@ -106,7 +106,7 @@ public sealed class Bootstrap : MonoBehaviour {
         entityManager.SetComponentData(nodeEntities[i], new Physical { Force = new float3(0, 0, 0), Mass = 10000f});
       else
         entityManager.SetComponentData(nodeEntities[i], new Physical { Force = new float3(0, 0, 0), Mass = 1f});
-      entityManager.SetComponentData(nodeEntities[i], new Drag { Value = nodeDrag});
+      entityManager.SetComponentData(nodeEntities[i], new Damper { Value = nodeDrag});
       entityManager.SetComponentData(nodeEntities[i], new Elasticity{ Value = nodeElasticity});
       entityManager.SetComponentData(nodeEntities[i], new GridPosition{ Value = new int2(i%xNodes, i/xNodes)});
       entityManager.SetSharedComponentData(nodeEntities[i], gridRender);
