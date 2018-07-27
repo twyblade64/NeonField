@@ -20,6 +20,7 @@ public sealed class Bootstrap : MonoBehaviour {
   public Material gridMaterial;
 
   public static EntityArchetype NodeArchetype;
+  public static EntityArchetype SpringArchetype;
 
   [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
   public static void Initialize() {
@@ -32,6 +33,11 @@ public sealed class Bootstrap : MonoBehaviour {
       typeof(TransformMatrix) //, typeof(MeshInstanceRenderer)
     );
 
+    SpringArchetype = entityManager.CreateArchetype(
+      typeof(Line), typeof(EntityPair), typeof(LineRenderer), 
+      typeof(Elasticity), typeof(LineRendererSettings)
+    );
+
     World.Active.GetExistingManager<MeshRenderSystem>().Enabled = false;
   }
 
@@ -40,7 +46,9 @@ public sealed class Bootstrap : MonoBehaviour {
 
     // Create nodes
     NativeArray<Entity> nodeEntities = new NativeArray<Entity>(xNodes * yNodes, Allocator.Temp);
+    NativeArray<Entity> springEntities = new NativeArray<Entity>((xNodes-1)*yNodes + (yNodes-1)*xNodes, Allocator.Temp);
     entityManager.CreateEntity(NodeArchetype, nodeEntities);
+    entityManager.CreateEntity(NodeArchetype, springEntities);
 
     
     MeshInstanceRenderer meshInstanceRenderer = new MeshInstanceRenderer {
@@ -49,6 +57,10 @@ public sealed class Bootstrap : MonoBehaviour {
       subMesh = 0,
       receiveShadows = false,
       castShadows = UnityEngine.Rendering.ShadowCastingMode.Off
+    };
+
+    LineRendererSettings lineRenderSettings = new LineRendererSettings {
+      Material = nodeMaterial
     };
 
     /*GridIdentifier gridIdentifier = new GridIdentifier {
@@ -95,6 +107,7 @@ public sealed class Bootstrap : MonoBehaviour {
     gridRender.WorkMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
     gridRender.WorkMesh.MarkDynamic();
 
+    int springIndex = 0;
     for (int i = 0; i < nodeEntities.Length; ++i) {
       
       float pX = 1f * (i%xNodes) / (xNodes-1) * nodeField.width + nodeField.x;
@@ -106,12 +119,47 @@ public sealed class Bootstrap : MonoBehaviour {
         entityManager.SetComponentData(nodeEntities[i], new Physical { Force = new float3(0, 0, 0), InverseMass = 0f});
       else
         entityManager.SetComponentData(nodeEntities[i], new Physical { Force = new float3(0, 0, 0), InverseMass = 1f});
+
+      if (i%xNodes != xNodes-1) {
+        Vector2[] lineUV = new Vector2[]{new Vector2(0,0),new Vector2(1,0),new Vector2(0,1),new Vector2(1,1)};
+        int[] lineTris = new int[]{0,1,3,0,3,2};
+        LineRenderer lineRenderer = new LineRenderer();
+        lineRenderer.Vertices = new Vector3[4];
+        lineRenderer.Normals = new Vector3[4];
+        lineRenderer.WorkMesh.vertices = lineRenderer.Vertices;
+        lineRenderer.WorkMesh.normals = lineRenderer.Normals;
+
+        entityManager.SetComponentData(springEntities[springIndex], new Line { start = new float3(0, 0, 0), end = new float3(0, 0, 0), width = nodeWidth});
+        entityManager.SetComponentData(springEntities[springIndex], new EntityPair { E1 = nodeEntities[i], E2 = nodeEntities[i+1] });
+        entityManager.SetComponentData(springEntities[springIndex], lineRenderer);
+        entityManager.SetComponentData(springEntities[springIndex], new Elasticity {Value = nodeElasticity});
+        entityManager.SetSharedComponentData(springEntities[springIndex], lineRenderSettings);
+        ++springIndex;
+      }
+      if (i/xNodes == yNodes-1) {
+        Vector2[] lineUV = new Vector2[]{new Vector2(0,0),new Vector2(1,0),new Vector2(0,1),new Vector2(1,1)};
+        int[] lineTris = new int[]{0,1,3,0,3,2};
+        LineRenderer lineRenderer = new LineRenderer();
+        lineRenderer.Vertices = new Vector3[4];
+        lineRenderer.Normals = new Vector3[4];
+        lineRenderer.WorkMesh.vertices = lineRenderer.Vertices;
+        lineRenderer.WorkMesh.normals = lineRenderer.Normals;
+
+        entityManager.SetComponentData(springEntities[springIndex], new Line { start = new float3(0, 0, 0), end = new float3(0, 0, 0), width = nodeWidth});
+        entityManager.SetComponentData(springEntities[springIndex], new EntityPair { E1 = nodeEntities[i], E2 = nodeEntities[i+xNodes] });
+        entityManager.SetComponentData(springEntities[springIndex], lineRenderer);
+        entityManager.SetComponentData(springEntities[springIndex], new Elasticity {Value = nodeElasticity});
+        entityManager.SetSharedComponentData(springEntities[springIndex], lineRenderSettings);
+        ++springIndex;
+      }
+      
       entityManager.SetComponentData(nodeEntities[i], new Damper { Value = nodeDrag});
       entityManager.SetComponentData(nodeEntities[i], new Elasticity{ Value = nodeElasticity});
       entityManager.SetComponentData(nodeEntities[i], new GridPosition{ Value = new int2(i%xNodes, i/xNodes)});
       entityManager.SetSharedComponentData(nodeEntities[i], gridRender);
       //entityManager.SetSharedComponentData(nodeEntities[i], meshInstanceRenderer);
     }
+    springEntities.Dispose();
     nodeEntities.Dispose();
   }
 
