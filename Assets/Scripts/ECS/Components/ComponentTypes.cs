@@ -65,6 +65,6 @@ public struct EntityPair : IComponentData {
 }
 
 [Serializable]
-public struct GridRenderSettings : ISharedComponentData {
+public struct LineRendererSettings : ISharedComponentData {
 	public Material Material;
 }
