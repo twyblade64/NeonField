@@ -34,12 +34,6 @@ public struct GridPosition : IComponentData {
 	public int2 Value;
 }
 
-/*[Serializable]
-public struct GridIdentifier : ISharedComponentData {
-	public int id;
-	public int2 size;
-}*/
-
 [Serializable]
 public struct GridRender : ISharedComponentData {
 	public Material Material;
@@ -48,6 +42,29 @@ public struct GridRender : ISharedComponentData {
 	public Mesh WorkMesh;
 	public Vector3[] Vertices;
 	public Vector3[] Normals;
-	//public NativeCounter counter;
-	//public NativeCounter.Concurrent concurrentCounter;
+}
+
+[Serializable]
+public struct LineRenderer : ISharedComponentData {
+	public Mesh WorkMesh;
+	public Vector3[] Vertices;
+	public Vector3[] Normals;
+}
+
+[Serializable]
+public struct Line : IComponentData {
+	public float3 start;
+	public float3 end;
+	public float width;
+}
+
+[Serializable]
+public struct EntityPair : IComponentData {
+	public Entity E1;
+	public Entity E2;
+}
+
+[Serializable]
+public struct GridRenderSettings : ISharedComponentData {
+	public Material Material;
 }
