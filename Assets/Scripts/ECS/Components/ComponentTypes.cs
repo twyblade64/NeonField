@@ -45,7 +45,7 @@ public struct GridRender : ISharedComponentData {
 }
 
 [Serializable]
-public struct LineRenderer : ISharedComponentData {
+public struct LineRenderer : IComponentData {
 	public Mesh WorkMesh;
 	public Vector3[] Vertices;
 	public Vector3[] Normals;
