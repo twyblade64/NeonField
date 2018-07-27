@@ -103,9 +103,9 @@ public sealed class Bootstrap : MonoBehaviour {
       entityManager.SetComponentData(nodeEntities[i], new Anchor { Value = new float3(pX, 0, pY)});
       entityManager.SetComponentData(nodeEntities[i], new Velocity { Value = new float3(0, 0, 0)});
       if (i%xNodes == 0 || i/xNodes == 0 || i%xNodes == xNodes-1 || i/xNodes == yNodes-1)
-        entityManager.SetComponentData(nodeEntities[i], new Physical { Force = new float3(0, 0, 0), Mass = 10000f});
+        entityManager.SetComponentData(nodeEntities[i], new Physical { Force = new float3(0, 0, 0), InverseMass = 0f});
       else
-        entityManager.SetComponentData(nodeEntities[i], new Physical { Force = new float3(0, 0, 0), Mass = 1f});
+        entityManager.SetComponentData(nodeEntities[i], new Physical { Force = new float3(0, 0, 0), InverseMass = 1f});
       entityManager.SetComponentData(nodeEntities[i], new Damper { Value = nodeDrag});
       entityManager.SetComponentData(nodeEntities[i], new Elasticity{ Value = nodeElasticity});
       entityManager.SetComponentData(nodeEntities[i], new GridPosition{ Value = new int2(i%xNodes, i/xNodes)});

@@ -16,7 +16,7 @@ public struct Elasticity : IComponentData {
 [Serializable]
 public struct Physical : IComponentData {
 	public float3 Force;
-	public float Mass;
+	public float InverseMass;
 }
 
 [Serializable]

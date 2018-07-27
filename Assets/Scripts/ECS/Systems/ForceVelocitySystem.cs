@@ -13,7 +13,7 @@ public class ForceVelocitySystem : JobComponentSystem {
     public float deltaTime;
 
     public void Execute(ref Velocity vel, ref Physical phys) {
-      vel.Value +=  phys.Force * deltaTime / phys.Mass;
+      vel.Value +=  phys.Force * deltaTime * phys.InverseMass;
       phys.Force = new float3(0,0,0);
     }
   }

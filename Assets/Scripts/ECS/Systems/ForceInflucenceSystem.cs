@@ -42,7 +42,7 @@ public class ForceInfluenceSystem : JobComponentSystem {
           float f = 1 - math.sqrt(distanceMagSqr) / generatorForces[j].distance;
           recieverPhysicals[i] = new Physical{ 
             Force = recieverPhysicals[i].Force + math.normalize(distance) * f * f * generatorForces[j].force,
-            Mass = recieverPhysicals[i].Mass
+            InverseMass = recieverPhysicals[i].InverseMass
           };
         }
       }

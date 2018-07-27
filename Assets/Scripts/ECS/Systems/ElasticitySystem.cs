@@ -28,7 +28,7 @@ public class ElasticitySystem : JobComponentSystem {
 		public void Execute(int i) {
 			float3 f = physical[i].Force;
 			f += elasticity[i].Value * (anchor[i].Value - position[i].Value);
-			physical[i] = new Physical{Force = f, Mass = physical[i].Mass};
+			physical[i] = new Physical{Force = f, InverseMass = physical[i].InverseMass};
 		}
 	}
 
