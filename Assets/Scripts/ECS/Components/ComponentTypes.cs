@@ -45,10 +45,14 @@ public struct GridRender : ISharedComponentData {
 }
 
 [Serializable]
-public struct LineRenderer : IComponentData {
+public struct LineRenderer : ISharedComponentData {
+	public const int MaxVertices = 510000;
 	public Mesh WorkMesh;
+	public Material Material;
 	public Vector3[] Vertices;
 	public Vector3[] Normals;
+	public NativeCounter Counter;
+	public NativeCounter.Concurrent ConcurrentCounter;
 }
 
 [Serializable]
@@ -62,9 +66,4 @@ public struct Line : IComponentData {
 public struct EntityPair : IComponentData {
 	public Entity E1;
 	public Entity E2;
-}
-
-[Serializable]
-public struct LineRendererSettings : ISharedComponentData {
-	public Material Material;
 }
