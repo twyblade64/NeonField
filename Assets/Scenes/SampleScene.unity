@@ -319,8 +319,8 @@ MonoBehaviour:
     y: -9
     width: 24
     height: 18
-  xNodes: 48
-  yNodes: 32
+  xNodes: 12
+  yNodes: 8
   startHeight: 0
   nodeMesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
   nodeMaterial: {fileID: 2100000, guid: be6c1ffdc4a8264478c9e6637b864d3d, type: 2}
