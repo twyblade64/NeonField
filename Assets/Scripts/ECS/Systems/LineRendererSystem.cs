@@ -15,20 +15,13 @@ using System.Text;
 [UpdateAfter(typeof(MeshCullingBarrier))]
 //[UnityEngine.ExecuteInEditMode]
 public class LineRendererSystem : ComponentSystem {
-  public struct Data {
-    public readonly int Length;
-    [ReadOnly] public SharedComponentDataArray<LineRenderer> lineRenderers;
-  }
-
-  [Inject] private Data m_Data;
-
   List<LineRenderer> rendererList = new List<LineRenderer>();
-  private ComponentGroup dependency;
+  private ComponentGroup _dependency;
   private int gridLayer;
 
   protected override void OnCreateManager(int capacity) {
-    dependency = GetComponentGroup(
-      typeof(LineRenderer)
+    _dependency = GetComponentGroup(
+       typeof(Line), typeof(LineRenderer)
     );
     gridLayer = LayerMask.NameToLayer("Grid");
   }

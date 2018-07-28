@@ -15,6 +15,11 @@ using UnityEngine.Rendering;
 [UpdateBefore(typeof(LineRendererSystem))]
 [UpdateAfter(typeof(LineFromEntitiesSystem))]
 public class LineMeshBuilderSystem : JobComponentSystem {
+  private struct Dependencies {
+    [ReadOnly] public SharedComponentDataArray<LineRenderer> _LineRenderers;
+  }
+  [Inject] Dependencies _dependencies;
+
   private ComponentGroup group;
   private List<LineRenderer> lineRenderers = new List<LineRenderer>();
 
@@ -40,17 +45,17 @@ public class LineMeshBuilderSystem : JobComponentSystem {
       float3 p2 = _lines[i].p2 - perp;
       float3 p3 = _lines[i].p2 + perp;
       
-      int index = _counter.Increment() * 4;
+      int vertIndex = _counter.Increment() * 4;
 
-      UnsafeUtility.WriteArrayElement(_vertices, index + 0, (Vector3) p0);
-      UnsafeUtility.WriteArrayElement(_vertices, index + 1, (Vector3) p1);
-      UnsafeUtility.WriteArrayElement(_vertices, index + 2, (Vector3) p2);
-      UnsafeUtility.WriteArrayElement(_vertices, index + 3, (Vector3) p3);
+      UnsafeUtility.WriteArrayElement(_vertices, vertIndex + 0, (Vector3) p0);
+      UnsafeUtility.WriteArrayElement(_vertices, vertIndex + 1, (Vector3) p1);
+      UnsafeUtility.WriteArrayElement(_vertices, vertIndex + 2, (Vector3) p2);
+      UnsafeUtility.WriteArrayElement(_vertices, vertIndex + 3, (Vector3) p3);
 
-      UnsafeUtility.WriteArrayElement(_normals, index + 0, Vector3.up);
-      UnsafeUtility.WriteArrayElement(_normals, index + 1, Vector3.up);
-      UnsafeUtility.WriteArrayElement(_normals, index + 2, Vector3.up);
-      UnsafeUtility.WriteArrayElement(_normals, index + 3, Vector3.up);
+      UnsafeUtility.WriteArrayElement(_normals, vertIndex + 0, Vector3.up);
+      UnsafeUtility.WriteArrayElement(_normals, vertIndex + 1, Vector3.up);
+      UnsafeUtility.WriteArrayElement(_normals, vertIndex + 2, Vector3.up);
+      UnsafeUtility.WriteArrayElement(_normals, vertIndex + 3, Vector3.up);
     }
   }
 
