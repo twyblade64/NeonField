@@ -48,7 +48,6 @@ public class GridRenderSystem : ComponentSystem {
       mesh.normals = render.Normals; 
 
       if (mesh.triangles.Length == 0) {
-        Debug.Log("Creating tris!");
         int xNodes = render.Size.x;
         int yNodes = render.Size.y;
         int[] tris = new int[(xNodes-1)*(yNodes-1)*2*3];
