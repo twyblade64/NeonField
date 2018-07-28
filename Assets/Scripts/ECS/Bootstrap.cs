@@ -170,12 +170,17 @@ public sealed class Bootstrap : MonoBehaviour {
       lineUV[i + 3] = new Vector2(1f, 1f);
     }
 
+    Debug.Log("Tris? : "+lineTris.Length);
+    Debug.Log("Start tris: "+lineRenderer.WorkMesh.triangles.Length);
+
     lineRenderer.WorkMesh.vertices = lineRenderer.Vertices;
     lineRenderer.WorkMesh.normals = lineRenderer.Normals;
     lineRenderer.WorkMesh.uv = lineUV;
     lineRenderer.WorkMesh.triangles = lineTris;
-    lineRenderer.WorkMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
     lineRenderer.WorkMesh.MarkDynamic();
+
+    Debug.Log("End tris: "+lineRenderer.WorkMesh.triangles.Length);
+    Debug.Log("Rand tris: "+entityManager.GetSharedComponentData<LineRenderer>(springEntities[3]).WorkMesh.triangles.Length);
 
     springEntities.Dispose();
     nodeEntities.Dispose();
