@@ -17,27 +17,27 @@ using System.Text;
 public class GridRenderSystem : ComponentSystem {
   public struct Data {
     public readonly int Length;
-    [ReadOnly] public SharedComponentDataArray<GridRender> gridRender;
+    [ReadOnly] public SharedComponentDataArray<GridRenderer> gridRender;
   }
 
   [Inject] private Data m_Data;
 
-  List<GridRender> gridRenderers = new List<GridRender>();
+  List<GridRenderer> gridRenderers = new List<GridRenderer>();
   private ComponentGroup dependency;
   private int gridLayer;
 
   protected override void OnCreateManager(int capacity) {
     dependency = GetComponentGroup(
-      typeof(GridRender)
+      typeof(GridRenderer)
     );
     gridLayer = LayerMask.NameToLayer("Grid");
   }
 
   protected override void OnUpdate() {
     Matrix4x4 identityMatrix = UnityEngine.Matrix4x4.identity;
-    EntityManager.GetAllUniqueSharedComponentDatas<GridRender>(gridRenderers);
+    EntityManager.GetAllUniqueSharedComponentDatas<GridRenderer>(gridRenderers);
     for (int i = 0; i < gridRenderers.Count; ++i) {
-      GridRender render = gridRenderers[i];
+      GridRenderer render = gridRenderers[i];
       Mesh mesh = render.WorkMesh;
 
       if (mesh == null) continue;

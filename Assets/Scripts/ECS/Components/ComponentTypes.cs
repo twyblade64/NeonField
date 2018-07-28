@@ -35,7 +35,7 @@ public struct GridPosition : IComponentData {
 }
 
 [Serializable]
-public struct GridRender : ISharedComponentData {
+public struct GridRenderer : ISharedComponentData {
 	public Material Material;
 	public float Width;
 	public int2 Size;

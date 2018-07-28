@@ -25,7 +25,7 @@ public class GridMeshBuilderSystem : JobComponentSystem {
   [Inject] private Data m_Data;*/
 
   private ComponentGroup group;
-  private List<GridRender> renderers = new List<GridRender>();
+  private List<GridRenderer> renderers = new List<GridRenderer>();
 
   unsafe struct GridMeshBuilderJob : IJobParallelFor {
     [ReadOnly] int2 _gridSize;
@@ -53,7 +53,7 @@ public class GridMeshBuilderSystem : JobComponentSystem {
 
   protected override void OnCreateManager(int capacity) {
     group = GetComponentGroup(
-      typeof(GridRender), typeof(Position), typeof(GridPosition)
+      typeof(GridRenderer), typeof(Position), typeof(GridPosition)
     );
   }
 
@@ -65,7 +65,7 @@ public class GridMeshBuilderSystem : JobComponentSystem {
 
     GridMeshBuilderJob job = new GridMeshBuilderJob();
     for (int i = 0; i < renderers.Count; ++i) {
-      GridRender renderer = renderers[i];
+      GridRenderer renderer = renderers[i];
 
       group.SetFilter(renderer);
       int groupCount = group.CalculateLength();
