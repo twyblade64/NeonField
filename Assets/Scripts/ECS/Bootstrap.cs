@@ -101,14 +101,14 @@ public sealed class Bootstrap : MonoBehaviour {
 
       // Springs
       if (i % xNodes != xNodes - 1) {
-        entityManager.SetComponentData(springEntities[springIndex], new Line { start = new float3(0, 0, 0), end = new float3(0, 0, 0), width = nodeWidth });
+        entityManager.SetComponentData(springEntities[springIndex], new Line { p1 = new float3(0, 0, 0), p2 = new float3(0, 0, 0), width = nodeWidth });
         entityManager.SetComponentData(springEntities[springIndex], new EntityPair { E1 = nodeEntities[i], E2 = nodeEntities[i + 1] });
         entityManager.SetComponentData(springEntities[springIndex], new Elasticity { Value = nodeElasticity });
         entityManager.SetSharedComponentData(springEntities[springIndex], lineRenderer);
         ++springIndex;
       }
       if (i / xNodes != yNodes - 1) {
-        entityManager.SetComponentData(springEntities[springIndex], new Line { start = new float3(0, 0, 0), end = new float3(0, 0, 0), width = nodeWidth });
+        entityManager.SetComponentData(springEntities[springIndex], new Line { p1 = new float3(0, 0, 0), p2 = new float3(0, 0, 0), width = nodeWidth });
         entityManager.SetComponentData(springEntities[springIndex], new EntityPair { E1 = nodeEntities[i], E2 = nodeEntities[i + xNodes] });
         entityManager.SetComponentData(springEntities[springIndex], new Elasticity { Value = nodeElasticity });
         entityManager.SetSharedComponentData(springEntities[springIndex], lineRenderer);

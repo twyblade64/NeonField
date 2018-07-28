@@ -57,8 +57,8 @@ public struct LineRenderer : ISharedComponentData {
 
 [Serializable]
 public struct Line : IComponentData {
-	public float3 start;
-	public float3 end;
+	public float3 p1;
+	public float3 p2;
 	public float width;
 }
 
