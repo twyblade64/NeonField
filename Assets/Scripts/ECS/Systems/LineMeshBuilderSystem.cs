@@ -29,6 +29,7 @@ public class LineMeshBuilderSystem : JobComponentSystem {
       _lines = group.GetComponentDataArray<Line>();
       _vertices = UnsafeUtility.AddressOf(ref vertices[0]);
       _normals = UnsafeUtility.AddressOf(ref normals[0]);
+      _counter = counter;
     }
 
     public void Execute(int i) {
