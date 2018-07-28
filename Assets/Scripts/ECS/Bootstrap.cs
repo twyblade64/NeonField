@@ -20,8 +20,6 @@ public sealed class Bootstrap : MonoBehaviour {
   public float nodeWidth;
   public Material gridMaterial;
 
-  //private static GridRender gridRenderer;
-
   public static EntityArchetype NodeArchetype;
   public static EntityArchetype SpringArchetype;
 
@@ -32,8 +30,8 @@ public sealed class Bootstrap : MonoBehaviour {
     NodeArchetype = entityManager.CreateArchetype(
       typeof(Position), typeof(Anchor), typeof(Velocity),
       typeof(Physical), typeof(Damper), typeof(Elasticity),
-      typeof(GridPosition), typeof(GridRenderer),
-      typeof(TransformMatrix)//, typeof(MeshInstanceRenderer)
+      typeof(GridPosition),
+      typeof(TransformMatrix)
     );
 
     SpringArchetype = entityManager.CreateArchetype(
@@ -71,15 +69,6 @@ public sealed class Bootstrap : MonoBehaviour {
       ConcurrentCounter = counter
     };
 
-    GridRenderer gridRenderer = new GridRenderer {
-      Material = gridMaterial,
-      Width = nodeWidth,
-      Size = new int2(xNodes, yNodes),
-      Vertices = new Vector3[xNodes * yNodes],
-      Normals = new Vector3[xNodes * yNodes],
-      WorkMesh = new Mesh()
-    };
-
     int springIndex = 0;
     for (int i = 0; i < nodeEntities.Length; ++i) {
 
@@ -96,8 +85,6 @@ public sealed class Bootstrap : MonoBehaviour {
       entityManager.SetComponentData(nodeEntities[i], new Damper { Value = nodeDrag });
       entityManager.SetComponentData(nodeEntities[i], new Elasticity { Value = nodeElasticity });
       entityManager.SetComponentData(nodeEntities[i], new GridPosition { Value = new int2(i % xNodes, i / xNodes) });
-      entityManager.SetSharedComponentData(nodeEntities[i], gridRenderer);
-      //entityManager.SetSharedComponentData(nodeEntities[i], meshInstanceRenderer);
 
       // Springs
       if (i % xNodes != xNodes - 1) {
@@ -115,37 +102,6 @@ public sealed class Bootstrap : MonoBehaviour {
         ++springIndex;
       }
     }
-
-    // Startup shared GridRenderer WorkMesh
-    gridRenderer = entityManager.GetSharedComponentData<GridRenderer>(nodeEntities[0]);
-    int[] gridTris = new int[(xNodes - 1) * (yNodes - 1) * 2 * 3];
-    int gridIndex = 0;
-    for (int y = 0; y < yNodes - 1; ++y) {
-      for (int x = 0; x < xNodes - 1; ++x) {
-        gridTris[gridIndex + 0] = (x) + (y) * xNodes;
-        gridTris[gridIndex + 1] = (x) + (y + 1) * xNodes;
-        gridTris[gridIndex + 2] = (x + 1) + (y + 1) * xNodes;
-
-        gridTris[gridIndex + 3] = (x) + (y) * xNodes;
-        gridTris[gridIndex + 4] = (x + 1) + (y + 1) * xNodes;
-        gridTris[gridIndex + 5] = (x + 1) + (y) * xNodes;
-        gridIndex += 6;
-      }
-    }
-
-    Vector2[] gridUV = new Vector2[xNodes * yNodes];
-    for (int y = 0; y < yNodes; ++y) {
-      for (int x = 0; x < xNodes; ++x) {
-        gridUV[x + y * xNodes] = new Vector2(1f * x / (xNodes - 1), 1f * y / (yNodes - 1));
-      }
-    }
-
-    gridRenderer.WorkMesh.vertices = gridRenderer.Vertices;
-    gridRenderer.WorkMesh.normals = gridRenderer.Normals;
-    gridRenderer.WorkMesh.uv = gridUV;
-    gridRenderer.WorkMesh.triangles = gridTris;
-    gridRenderer.WorkMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
-    gridRenderer.WorkMesh.MarkDynamic();
 
     // Startup shared LineRenderer WorkMesh
     lineRenderer = entityManager.GetSharedComponentData<LineRenderer>(springEntities[0]);
@@ -170,17 +126,11 @@ public sealed class Bootstrap : MonoBehaviour {
       lineUV[i + 3] = new Vector2(1f, 1f);
     }
 
-    Debug.Log("Tris? : "+lineTris.Length);
-    Debug.Log("Start tris: "+lineRenderer.WorkMesh.triangles.Length);
-
     lineRenderer.WorkMesh.vertices = lineRenderer.Vertices;
     lineRenderer.WorkMesh.normals = lineRenderer.Normals;
     lineRenderer.WorkMesh.uv = lineUV;
     lineRenderer.WorkMesh.triangles = lineTris;
     lineRenderer.WorkMesh.MarkDynamic();
-
-    Debug.Log("End tris: "+lineRenderer.WorkMesh.triangles.Length);
-    Debug.Log("Rand tris: "+entityManager.GetSharedComponentData<LineRenderer>(springEntities[3]).WorkMesh.triangles.Length);
 
     springEntities.Dispose();
     nodeEntities.Dispose();
