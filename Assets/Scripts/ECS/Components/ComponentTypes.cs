@@ -68,3 +68,9 @@ public struct EntityPair : IComponentData {
 	public Entity E1;
 	public Entity E2;
 }
+
+[Serializable]
+public struct FreezeAxis : IComponentData {
+	public bool3 FreezeFlag;
+	public float3 FreezePos;
+}
