@@ -29,7 +29,7 @@ public sealed class Bootstrap : MonoBehaviour {
 
     NodeArchetype = entityManager.CreateArchetype(
       typeof(Position), typeof(Velocity),
-      typeof(Physical), typeof(Damper)
+      typeof(Physical), typeof(Damper), typeof(FreezeAxis)
     );
 
     SpringArchetype = entityManager.CreateArchetype(
@@ -80,8 +80,8 @@ public sealed class Bootstrap : MonoBehaviour {
         entityManager.SetComponentData(nodeEntities[i], new Physical { Force = new float3(0, 0, 0), InverseMass = 0f });
       else
         entityManager.SetComponentData(nodeEntities[i], new Physical { Force = new float3(0, 0, 0), InverseMass = 1f });
-
       entityManager.SetComponentData(nodeEntities[i], new Damper { Value = nodeDrag });
+      entityManager.SetComponentData(nodeEntities[i], new FreezeAxis { FreezeFlag = new bool3(false,true,false), FreezePos = new float3(0,0,0) });
 
       // Springs
       if (i % xNodes != xNodes - 1) { // Horizontal springs
