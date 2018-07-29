@@ -173,8 +173,9 @@ MonoBehaviour:
   drag: 0.2
   shotSpeed: 25
   shotDamage: 1
-  shootSep: 1
-  shootTime: 0.1
+  shootVSep: 0.6
+  shootHSep: 0.45
+  shootTime: 0.05
 --- !u!114 &114856775363726454
 MonoBehaviour:
   m_ObjectHideFlags: 1

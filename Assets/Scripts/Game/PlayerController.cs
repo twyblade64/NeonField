@@ -10,7 +10,9 @@ public class PlayerController : MonoBehaviour {
 	public float drag;
 	public float shotSpeed;
 	public float shotDamage;
-	public float shootSep;
+	public float shootVSep;
+	public float shootHSep;
+	private bool shootRight = false;
 	private Vector2 vel;
 
 	public float shootTime;
@@ -57,7 +59,8 @@ public class PlayerController : MonoBehaviour {
 
 	IEnumerator Shoot(Vector2 dir) {
 		BulletController bc = Instantiate(bulletPrefab).GetComponent<BulletController>();
-		bc.transform.position = transform.position + new Vector3(dir.x, 0, dir.y)*shootSep;
+		bc.transform.position = transform.position + new Vector3(dir.x, 0, dir.y)*shootVSep + new Vector3(-dir.y, 0, dir.x)*shootHSep*(shootRight?-1:1);
+		shootRight = !shootRight;
 		bc.speed = shotSpeed;
 		bc.damage = shotDamage;
 		bc.direction = dir;
