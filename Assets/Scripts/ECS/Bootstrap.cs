@@ -28,10 +28,8 @@ public sealed class Bootstrap : MonoBehaviour {
     var entityManager = World.Active.GetOrCreateManager<EntityManager>();
 
     NodeArchetype = entityManager.CreateArchetype(
-      typeof(Position), typeof(Anchor), typeof(Velocity),
-      typeof(Physical), typeof(Damper), typeof(Elasticity),
-      typeof(GridPosition),
-      typeof(TransformMatrix)
+      typeof(Position), typeof(Velocity),
+      typeof(Physical), typeof(Damper)
     );
 
     SpringArchetype = entityManager.CreateArchetype(
@@ -75,7 +73,6 @@ public sealed class Bootstrap : MonoBehaviour {
       float pX = 1f * (i % xNodes) / (xNodes - 1) * nodeField.width + nodeField.x;
       float pY = 1f * (i / xNodes) / (yNodes - 1) * nodeField.height + nodeField.y;
       entityManager.SetComponentData(nodeEntities[i], new Position { Value = new float3(pX, (Mathf.Sin(2f * Mathf.PI * (i / xNodes) / 20) + Mathf.Cos(2f * Mathf.PI * (i % xNodes) / 20)) * startHeight, pY) });
-      entityManager.SetComponentData(nodeEntities[i], new Anchor { Value = new float3(pX, 0, pY) });
       entityManager.SetComponentData(nodeEntities[i], new Velocity { Value = new float3(0, 0, 0) });
       if (i % xNodes == 0 || i / xNodes == 0 || i % xNodes == xNodes - 1 || i / xNodes == yNodes - 1)
         entityManager.SetComponentData(nodeEntities[i], new Physical { Force = new float3(0, 0, 0), InverseMass = 0f });
@@ -83,8 +80,6 @@ public sealed class Bootstrap : MonoBehaviour {
         entityManager.SetComponentData(nodeEntities[i], new Physical { Force = new float3(0, 0, 0), InverseMass = 1f });
 
       entityManager.SetComponentData(nodeEntities[i], new Damper { Value = nodeDrag });
-      entityManager.SetComponentData(nodeEntities[i], new Elasticity { Value = nodeElasticity });
-      entityManager.SetComponentData(nodeEntities[i], new GridPosition { Value = new int2(i % xNodes, i / xNodes) });
 
       // Springs
       if (i % xNodes != xNodes - 1) {
