@@ -6,7 +6,7 @@ using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
 
-[UpdateBefore(typeof(VelocityMovementSystem))]
+[UpdateAfter(typeof(VelocityMovementSystem))]
 public class FreezePositionSystem : JobComponentSystem {
   [BurstCompile]
   struct FreezePositionJob : IJobProcessComponentData<Position, FreezeAxis> {
