@@ -21,7 +21,7 @@ public class LineRendererSystem : ComponentSystem {
 
   protected override void OnCreateManager(int capacity) {
     _dependency = GetComponentGroup(
-       typeof(Line), typeof(LineRenderer)
+       typeof(Spring), typeof(LineRenderer)
     );
     gridLayer = LayerMask.NameToLayer("Grid");
   }

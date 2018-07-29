@@ -24,14 +24,14 @@ public class LineMeshBuilderSystem : JobComponentSystem {
   private List<LineRenderer> lineRenderers = new List<LineRenderer>();
 
   unsafe struct LineMeshBuilderJob : IJobParallelFor {
-    [ReadOnly] ComponentDataArray<Line> _lines;
+    [ReadOnly] ComponentDataArray<Spring> _lines;
     [NativeDisableUnsafePtrRestriction] void * _vertices;
     [NativeDisableUnsafePtrRestriction] void * _normals;
 
     NativeCounter.Concurrent _counter;
 
     public void Initialize(ComponentGroup group, Vector3[] vertices, Vector3[] normals, NativeCounter.Concurrent counter) {
-      _lines = group.GetComponentDataArray<Line>();
+      _lines = group.GetComponentDataArray<Spring>();
       _vertices = UnsafeUtility.AddressOf(ref vertices[0]);
       _normals = UnsafeUtility.AddressOf(ref normals[0]);
       _counter = counter;
@@ -61,7 +61,7 @@ public class LineMeshBuilderSystem : JobComponentSystem {
 
   protected override void OnCreateManager(int capacity) {
     group = GetComponentGroup(
-      typeof(LineRenderer), typeof(Line)
+      typeof(LineRenderer), typeof(Spring)
     );
   }
 

@@ -9,7 +9,7 @@ using UnityEngine;
 public class LineFromEntitiesSystem : JobComponentSystem {
   public struct Data {
     public readonly int Length;
-    public ComponentDataArray<Line> lines;
+    public ComponentDataArray<Spring> lines;
     [ReadOnly] public ComponentDataArray<EntityPair> entityPairs;
   }
 
@@ -18,12 +18,12 @@ public class LineFromEntitiesSystem : JobComponentSystem {
 
   [BurstCompile]
   struct LineFromEntitiesJob : IJobParallelFor {
-    public ComponentDataArray<Line> _lines;
+    public ComponentDataArray<Spring> _lines;
     [ReadOnly] public ComponentDataArray<EntityPair> _entityPairs;
     [ReadOnly] public ComponentDataFromEntity<Position> _positions;
 
     public void Execute(int i) {
-      _lines[i] = new Line {
+      _lines[i] = new Spring {
         p1 = _positions[_entityPairs[i].E1].Value,
         p2 = _positions[_entityPairs[i].E2].Value,
         width = _lines[i].width
