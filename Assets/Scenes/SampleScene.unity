@@ -315,17 +315,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nodeField:
     serializedVersion: 2
-    x: -12
-    y: -9
-    width: 24
-    height: 18
+    x: -11
+    y: -8
+    width: 22
+    height: 16
   xNodes: 48
   yNodes: 36
   startHeight: 0
   nodeMesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
   nodeMaterial: {fileID: 2100000, guid: d0991afe3aa9c0b45b75c9d89de6f22d, type: 2}
-  nodeElasticity: 200
-  nodeDrag: 0.95
+  nodeElasticity: 100
+  nodeDrag: 0.8
   nodeWidth: 0.1
   gridMaterial: {fileID: 2100000, guid: 6833a623d1b4df54abdfe933a1483a27, type: 2}
 --- !u!1 &613906565
@@ -751,8 +751,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_SerializedData:
-    force: 100
-    distance: 50
+    force: 1000
+    distance: 5
 --- !u!1001 &847748183
 Prefab:
   m_ObjectHideFlags: 0
@@ -814,7 +814,7 @@ Prefab:
     - target: {fileID: 114856775363726454, guid: a29099f38fd3ee546b128cc20ca18430,
         type: 2}
       propertyPath: m_SerializedData.force
-      value: 200
+      value: 500
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a29099f38fd3ee546b128cc20ca18430, type: 2}
@@ -834,7 +834,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1123578183
 MonoBehaviour:
   m_ObjectHideFlags: 0

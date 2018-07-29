@@ -197,8 +197,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_SerializedData:
-    force: 500
-    distance: 1
+    force: 1000
+    distance: 2
 --- !u!212 &212130439694318358
 SpriteRenderer:
   m_ObjectHideFlags: 1
