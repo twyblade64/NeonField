@@ -127,6 +127,7 @@ public sealed class Bootstrap : MonoBehaviour {
     lineRenderer.WorkMesh.uv = lineUV;
     lineRenderer.WorkMesh.triangles = lineTris;
     lineRenderer.WorkMesh.MarkDynamic();
+    lineRenderer.WorkMesh.bounds = new Bounds(Vector3.zero, Vector3.one * 48);
 
     springEntities.Dispose();
     nodeEntities.Dispose();
