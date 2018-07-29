@@ -18,7 +18,7 @@ public class VelocityMovementSystem : JobComponentSystem {
 
   protected override JobHandle OnUpdate(JobHandle inputDeps) {
     MoveJob job = new MoveJob {
-      deltaTime = Time.deltaTime
+      deltaTime = math.min(Time.deltaTime, 1f/30)
     };
 
     JobHandle jobHandle = job.Schedule(this, 64, inputDeps);
