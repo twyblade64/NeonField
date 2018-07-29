@@ -68,6 +68,8 @@ public class LineMeshBuilderSystem : JobComponentSystem {
   protected override JobHandle OnUpdate(JobHandle inputDeps) {
     EntityManager.GetAllUniqueSharedComponentDatas(lineRenderers);
 
+    
+    NativeCounter lineCounter = new NativeCounter(Allocator.Temp);
     LineMeshBuilderJob job = new LineMeshBuilderJob();
     for (int i = 0; i < lineRenderers.Count; ++i) {
       LineRenderer renderer = lineRenderers[i];
@@ -76,13 +78,14 @@ public class LineMeshBuilderSystem : JobComponentSystem {
       int groupCount = group.CalculateLength();
       if (groupCount == 0) continue;
 
-      job.Initialize(group, renderer.Vertices, renderer.Normals, renderer.ConcurrentCounter);
+      lineCounter.Count = 0;
+      job.Initialize(group, renderer.Vertices, renderer.Normals, lineCounter);
       inputDeps = job.Schedule(groupCount, 8, inputDeps);
       inputDeps.Complete();
-      renderer.Counter.Count = 0;
     }
     lineRenderers.Clear();
+    lineCounter.Dispose();
     return inputDeps;
   }
-
+  
 }

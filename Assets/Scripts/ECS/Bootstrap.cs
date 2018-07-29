@@ -57,14 +57,11 @@ public sealed class Bootstrap : MonoBehaviour {
       castShadows = UnityEngine.Rendering.ShadowCastingMode.Off
     };
 
-    var counter = new NativeCounter(Allocator.Persistent);
     LineRenderer lineRenderer = new LineRenderer() {
       WorkMesh = new Mesh(),
       Material = nodeMaterial,
       Vertices = new Vector3[(2 * xNodes * yNodes - xNodes - yNodes)*4],
-      Normals = new Vector3[(2 * xNodes * yNodes - xNodes - yNodes)*4],
-      Counter = counter,
-      ConcurrentCounter = counter
+      Normals = new Vector3[(2 * xNodes * yNodes - xNodes - yNodes)*4]
     };
 
     int springIndex = 0;
