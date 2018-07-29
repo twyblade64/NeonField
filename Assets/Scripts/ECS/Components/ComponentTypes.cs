@@ -56,9 +56,10 @@ public struct LineRenderer : ISharedComponentData {
 }
 
 [Serializable]
-public struct Line : IComponentData {
+public struct Spring : IComponentData {
 	public float3 p1;
 	public float3 p2;
+	public float length;
 	public float width;
 }
 

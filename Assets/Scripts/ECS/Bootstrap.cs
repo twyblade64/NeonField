@@ -33,7 +33,7 @@ public sealed class Bootstrap : MonoBehaviour {
     );
 
     SpringArchetype = entityManager.CreateArchetype(
-      typeof(Line), typeof(EntityPair),
+      typeof(Spring), typeof(EntityPair),
       typeof(Elasticity), typeof(LineRenderer)
     );
 
@@ -68,6 +68,8 @@ public sealed class Bootstrap : MonoBehaviour {
     };
 
     int springIndex = 0;
+    float hSpringLength = (nodeField.width / xNodes) * 0.95f;
+    float vSpringLength = (nodeField.height / yNodes) * 0.95f;
     for (int i = 0; i < nodeEntities.Length; ++i) {
 
       float pX = 1f * (i % xNodes) / (xNodes - 1) * nodeField.width + nodeField.x;
@@ -82,15 +84,15 @@ public sealed class Bootstrap : MonoBehaviour {
       entityManager.SetComponentData(nodeEntities[i], new Damper { Value = nodeDrag });
 
       // Springs
-      if (i % xNodes != xNodes - 1) {
-        entityManager.SetComponentData(springEntities[springIndex], new Line { p1 = new float3(0, 0, 0), p2 = new float3(0, 0, 0), width = nodeWidth });
+      if (i % xNodes != xNodes - 1) { // Horizontal springs
+        entityManager.SetComponentData(springEntities[springIndex], new Spring { p1 = new float3(0, 0, 0), p2 = new float3(0, 0, 0), length = hSpringLength, width = nodeWidth });
         entityManager.SetComponentData(springEntities[springIndex], new EntityPair { E1 = nodeEntities[i], E2 = nodeEntities[i + 1] });
         entityManager.SetComponentData(springEntities[springIndex], new Elasticity { Value = nodeElasticity });
         entityManager.SetSharedComponentData(springEntities[springIndex], lineRenderer);
         ++springIndex;
       }
-      if (i / xNodes != yNodes - 1) {
-        entityManager.SetComponentData(springEntities[springIndex], new Line { p1 = new float3(0, 0, 0), p2 = new float3(0, 0, 0), width = nodeWidth });
+      if (i / xNodes != yNodes - 1) { // Vertical springs
+        entityManager.SetComponentData(springEntities[springIndex], new Spring { p1 = new float3(0, 0, 0), p2 = new float3(0, 0, 0), length = vSpringLength, width = nodeWidth });
         entityManager.SetComponentData(springEntities[springIndex], new EntityPair { E1 = nodeEntities[i], E2 = nodeEntities[i + xNodes] });
         entityManager.SetComponentData(springEntities[springIndex], new Elasticity { Value = nodeElasticity });
         entityManager.SetSharedComponentData(springEntities[springIndex], lineRenderer);
