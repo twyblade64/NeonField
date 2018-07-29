@@ -7,9 +7,9 @@ using Unity.Transforms;
 using UnityEngine;
 
 [UpdateAfter(typeof(VelocityMovementSystem))]
-public class ForceInertiaSystem : JobComponentSystem {
+public class VelocityDampSystem : JobComponentSystem {
   [BurstCompile]
-  struct ForceInertiaJob : IJobProcessComponentData<Velocity, Damper> {
+  struct VelocityDampJob : IJobProcessComponentData<Velocity, Damper> {
     public float deltaTime;
 
     public void Execute(ref Velocity vel, [ReadOnly] ref Damper damper) {
@@ -18,7 +18,7 @@ public class ForceInertiaSystem : JobComponentSystem {
   }
 
   protected override JobHandle OnUpdate(JobHandle inputDeps) {
-    ForceInertiaJob job = new ForceInertiaJob {
+    VelocityDampJob job = new VelocityDampJob {
       deltaTime = Time.deltaTime
     };
 
