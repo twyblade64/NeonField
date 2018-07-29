@@ -78,6 +78,8 @@ public class LineMeshBuilderSystem : JobComponentSystem {
 
       job.Initialize(group, renderer.Vertices, renderer.Normals, renderer.ConcurrentCounter);
       inputDeps = job.Schedule(groupCount, 8, inputDeps);
+      inputDeps.Complete();
+      renderer.Counter.Count = 0;
     }
     lineRenderers.Clear();
     return inputDeps;

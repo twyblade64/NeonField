@@ -43,8 +43,6 @@ public class LineRendererSystem : ComponentSystem {
       UnityEngine.Graphics.DrawMesh(
           mesh, identityMatrix, render.Material, gridLayer
       );
-
-      render.Counter.Count = 0;
     }
     rendererList.Clear();
   }
