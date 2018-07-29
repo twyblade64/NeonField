@@ -12,9 +12,9 @@ public class FreezePositionSystem : JobComponentSystem {
   struct FreezePositionJob : IJobProcessComponentData<Position, FreezeAxis> {
     public void Execute(ref Position position, [ReadOnly] ref FreezeAxis freezeAxis) {
       position.Value = new float3(
-        freezeAxis.FreezeFlag.x ? freezeAxis.FreezePos.x : position.Value.x,
-        freezeAxis.FreezeFlag.y ? freezeAxis.FreezePos.y : position.Value.y,
-        freezeAxis.FreezeFlag.z ? freezeAxis.FreezePos.z : position.Value.z
+        (freezeAxis.FreezeMask | FreezeAxis.AxisMask.X) != 0 ? freezeAxis.FreezePos.x : position.Value.x,
+        (freezeAxis.FreezeMask | FreezeAxis.AxisMask.Y) != 0 ? freezeAxis.FreezePos.y : position.Value.y,
+        (freezeAxis.FreezeMask | FreezeAxis.AxisMask.Z) != 0 ? freezeAxis.FreezePos.z : position.Value.z
       );
     }
   }

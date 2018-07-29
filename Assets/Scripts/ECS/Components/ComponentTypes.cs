@@ -71,6 +71,13 @@ public struct EntityPair : IComponentData {
 
 [Serializable]
 public struct FreezeAxis : IComponentData {
-	public bool3 FreezeFlag;
+	public enum AxisMask  {
+		NONE 	= 0,
+		X			= 1<<0,
+		Y			= 1<<1,
+		Z			= 1<<2
+	}
+
+	public AxisMask FreezeMask;
 	public float3 FreezePos;
 }
