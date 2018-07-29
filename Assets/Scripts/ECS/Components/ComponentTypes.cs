@@ -73,9 +73,9 @@ public struct EntityPair : IComponentData {
 public struct FreezeAxis : IComponentData {
 	public enum AxisMask  {
 		NONE 	= 0,
-		X			= 1<<0,
-		Y			= 1<<1,
-		Z			= 1<<2
+		X			= 1,
+		Y			= 2,
+		Z			= 4
 	}
 
 	public AxisMask FreezeMask;
