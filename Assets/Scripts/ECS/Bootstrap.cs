@@ -6,6 +6,7 @@ using Unity.Rendering;
 using Unity.Transforms;
 using Unity.Transforms2D;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public sealed class Bootstrap : MonoBehaviour {
   public Rect nodeField;
@@ -120,6 +121,7 @@ public sealed class Bootstrap : MonoBehaviour {
       lineUV[i + 3] = new Vector2(1f, 1f);
     }
 
+    lineRenderer.WorkMesh.indexFormat = IndexFormat.UInt32;
     lineRenderer.WorkMesh.vertices = lineRenderer.Vertices;
     lineRenderer.WorkMesh.normals = lineRenderer.Normals;
     lineRenderer.WorkMesh.uv = lineUV;
