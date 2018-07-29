@@ -27,7 +27,6 @@ public class PlayerController : MonoBehaviour {
 	void Update () {
 		Vector2 shootDir = new Vector2(Input.GetAxis("ShootX"), Input.GetAxis("ShootY"));
 		if (shootDir.sqrMagnitude > 0) {
-			Debug.Log("Shoot! "+shootDir);
 			shootDir.Normalize();
 			Quaternion rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(new Vector3(shootDir.x, 0, shootDir.y), Vector3.up), .5f);
 			//rotation.w = 0;
