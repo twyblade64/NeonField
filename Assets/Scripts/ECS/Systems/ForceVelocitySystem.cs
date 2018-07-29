@@ -8,12 +8,15 @@ using UnityEngine;
 
 [UpdateBefore(typeof(VelocityMovementSystem))]
 public class ForceVelocitySystem : JobComponentSystem {
+  public const float STABILITY_THERESHOLD = 0.0001f;
+
   [BurstCompile]
   struct ApplyForceJob : IJobProcessComponentData<Velocity, Physical> {
     public float deltaTime;
 
     public void Execute(ref Velocity vel, ref Physical phys) {
-      vel.Value +=  phys.Force * deltaTime * phys.InverseMass;
+      if (math.lengthSquared(phys.Force) > STABILITY_THERESHOLD)
+        vel.Value +=  phys.Force * deltaTime * phys.InverseMass;
       phys.Force = new float3(0,0,0);
     }
   }
