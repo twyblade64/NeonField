@@ -6,14 +6,20 @@ using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
 
-[UpdateAfter(typeof(VelocityMovementSystem))]
+[UpdateBefore(typeof(VelocityMovementSystem))]
+[UpdateAfter(typeof(ForceVelocitySystem))]
 public class VelocityDampSystem : JobComponentSystem {
+  public const float STABILITY_THERESHOLD = 0.0001f;
   [BurstCompile]
   struct VelocityDampJob : IJobProcessComponentData<Velocity, Damper> {
     public float deltaTime;
 
     public void Execute(ref Velocity vel, [ReadOnly] ref Damper damper) {
-      vel = new Velocity { Value = vel.Value * damper.Value };
+      float3 v =  vel.Value * damper.Value;
+      if (math.lengthSquared(v) > STABILITY_THERESHOLD)
+        vel = new Velocity { Value = v };
+      else
+        vel = new Velocity { Value = new float3(0,0,0) };
     }
   }
 
