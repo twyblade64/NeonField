@@ -19,7 +19,7 @@ public class BulletController : MonoBehaviour {
 	
 	IEnumerator CheckBounds() {
 		while (true) {
-			if (transform.position.sqrMagnitude > 20*20) {
+			if (transform.position.sqrMagnitude > 40*40) {
 				Destroy(this.gameObject);
 				break;
 			}
