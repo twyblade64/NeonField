@@ -11,19 +11,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71c1514a6bd24e1e882cebbe1904ce04, type: 3}
   m_Name: Retroscape SDF
   m_EditorClassIdentifier: 
-  hashCode: 0
+  hashCode: 924491403
   material: {fileID: 21387143018144856}
-  materialHashCode: 0
+  materialHashCode: -993092576
   fontAssetType: 1
   m_fontInfo:
     Name: Retroscape
     PointSize: 66
-    Scale: 0
+    Scale: 1
     CharacterCount: 68
     LineHeight: 94.25
     Baseline: 0
     Ascender: 75.4375
-    CapHeight: 0
+    CapHeight: 66
     Descender: -18.875
     CenterLine: 0
     SuperscriptOffset: 75.4375
@@ -33,7 +33,7 @@ MonoBehaviour:
     UnderlineThickness: 3.2871094
     strikethrough: 20.568182
     strikethroughThickness: 3.2871094
-    TabWidth: 0
+    TabWidth: 188.75
     Padding: 5
     AtlasWidth: 512
     AtlasHeight: 512
@@ -42,10 +42,10 @@ MonoBehaviour:
   - id: 32
     x: 6
     y: 517
-    width: 0
-    height: 0
+    width: 18.875
+    height: 94.3125
     xOffset: 0
-    yOffset: 0
+    yOffset: 75.4375
     xAdvance: 18.875
     scale: 1
   - id: 33
@@ -765,7 +765,7 @@ Material:
     - _FaceUVSpeedX: 0
     - _FaceUVSpeedY: 0
     - _GlowInner: 0.05
-    - _GlowOffset: 0
+    - _GlowOffset: 0.07
     - _GlowOuter: 0.05
     - _GlowPower: 0.75
     - _GradientScale: 6
@@ -775,12 +775,12 @@ Material:
     - _OutlineSoftness: 0
     - _OutlineUVSpeedX: 0
     - _OutlineUVSpeedY: 0
-    - _OutlineWidth: 0
+    - _OutlineWidth: 0.495
     - _PerspectiveFilter: 0.875
     - _Reflectivity: 10
-    - _ScaleRatioA: 1
-    - _ScaleRatioB: 1
-    - _ScaleRatioC: 1
+    - _ScaleRatioA: 0.8333333
+    - _ScaleRatioB: 0.6770833
+    - _ScaleRatioC: 0.6770833
     - _ScaleX: 1
     - _ScaleY: 1
     - _ShaderFlags: 0
@@ -806,7 +806,7 @@ Material:
     - _FaceColor: {r: 1, g: 1, b: 1, a: 1}
     - _GlowColor: {r: 0, g: 1, b: 0, a: 0.5}
     - _MaskCoord: {r: 0, g: 0, b: 32767, a: 32767}
-    - _OutlineColor: {r: 0, g: 0, b: 0, a: 1}
+    - _OutlineColor: {r: 0.05724919, g: 1, b: 0, a: 1}
     - _ReflectFaceColor: {r: 0, g: 0, b: 0, a: 1}
     - _ReflectOutlineColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}

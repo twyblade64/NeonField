@@ -35,12 +35,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4743640046706164}
+  - component: {fileID: 65448985687472380}
+  - component: {fileID: 54079528330392226}
   - component: {fileID: 114696546241906892}
   - component: {fileID: 114412129792154196}
   - component: {fileID: 114866446942108262}
-  - component: {fileID: 65448985687472380}
   - component: {fileID: 114823084933215446}
-  - component: {fileID: 54079528330392226}
   - component: {fileID: 114762417618696672}
   m_Layer: 0
   m_Name: Bullet Prefab
