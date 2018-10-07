@@ -4,7 +4,6 @@ using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Rendering;
 using Unity.Transforms;
-using Unity.Transforms2D;
 using UnityEngine;
 using UnityEngine.Rendering;
 

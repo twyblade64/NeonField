@@ -24,7 +24,7 @@ GameObject:
   - component: {fileID: 114666741549367862}
   - component: {fileID: 114435557344313466}
   - component: {fileID: 114131739036700726}
-  - component: {fileID: 114110565013981226}
+  - component: {fileID: 114060368746912978}
   m_Layer: 0
   m_Name: Explosion Prefab
   m_TagString: Untagged
@@ -45,7 +45,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &114110565013981226
+--- !u!114 &114060368746912978
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
@@ -53,7 +53,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1363621862684636}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 168b0e3756704251859c57ee75912ca1, type: 3}
+  m_Script: {fileID: 11500000, guid: 0af0db853e732453799566a0e597993c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_SerializedData:
@@ -94,9 +94,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be9923a9b97a6734e8b75206627c7f7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  force: 0
-  distance: 0
-  duration: 0
+  force: -1000
+  distance: 15
+  duration: 0.2
 --- !u!114 &114435557344313466
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -39,9 +39,9 @@ GameObject:
   - component: {fileID: 54439645518191320}
   - component: {fileID: 114612484555302096}
   - component: {fileID: 114856775363726454}
-  - component: {fileID: 114868605792998186}
   - component: {fileID: 114788728030153090}
   - component: {fileID: 114496383417143038}
+  - component: {fileID: 114688090639329276}
   m_Layer: 0
   m_Name: Player Prefab
   m_TagString: Player
@@ -125,6 +125,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5bf10cdea1344482e91a4f2b58506b77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &114688090639329276
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1884313014859042}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0af0db853e732453799566a0e597993c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SerializedData:
+    Value:
+      x: 0
+      y: 0
+      z: 0
 --- !u!114 &114788728030153090
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -164,22 +180,6 @@ MonoBehaviour:
   m_SerializedData:
     force: 500
     distance: 1.5
---- !u!114 &114868605792998186
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1884313014859042}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 168b0e3756704251859c57ee75912ca1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_SerializedData:
-    Value:
-      x: 0
-      y: 0
-      z: 0
 --- !u!212 &212956275143669788
 SpriteRenderer:
   m_ObjectHideFlags: 1

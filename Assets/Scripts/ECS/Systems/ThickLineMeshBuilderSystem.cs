@@ -74,7 +74,7 @@ public class ThickLineMeshBuilderSystem : JobComponentSystem {
   }
 
   protected override JobHandle OnUpdate(JobHandle inputDeps) {
-    EntityManager.GetAllUniqueSharedComponentDatas(lineRenderers);
+    EntityManager.GetAllUniqueSharedComponentData<LineRenderer>(lineRenderers);
 
     NativeCounter lineCounter = new NativeCounter(Allocator.Temp);
     LineMeshBuilderJob job = new LineMeshBuilderJob();

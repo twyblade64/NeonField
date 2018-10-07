@@ -17,7 +17,6 @@ using UnityEngine.Rendering;
 /// - Raul Vera 2018
 /// </summary>
 [UpdateAfter(typeof(PreLateUpdate.ParticleSystemBeginUpdateAll))]
-[UpdateAfter(typeof(MeshCullingBarrier))]
 public class LineRendererSystem : ComponentSystem {
   List<LineRenderer> rendererList = new List<LineRenderer>();
   private ComponentGroup _dependency;
@@ -32,7 +31,7 @@ public class LineRendererSystem : ComponentSystem {
 
   protected override void OnUpdate() {
     Matrix4x4 identityMatrix = UnityEngine.Matrix4x4.identity;
-    EntityManager.GetAllUniqueSharedComponentDatas<LineRenderer>(rendererList);
+    EntityManager.GetAllUniqueSharedComponentData<LineRenderer>(rendererList);
     for (int i = 0; i < rendererList.Count; ++i) {
       LineRenderer render = rendererList[i];
       Mesh mesh = render.WorkMesh;
