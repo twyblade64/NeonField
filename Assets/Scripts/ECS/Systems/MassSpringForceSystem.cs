@@ -1,12 +1,23 @@
+using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
-using Unity.Burst;
 using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
 
-
+/// <summary>
+/// This system takes the spring and physical components 
+/// to generate a pushing or a pulling force.
+/// 
+/// The system has two jobs
+/// - HashMassSpringJob: Creates a hashMap with the masses as keys and the springs as values
+/// so we can iterate per-mass basis to calculate the resulting force over that mass.
+/// - MassSpringForceJob: Iterates over all the hashMap entries, calculates the resulting force 
+/// and applies it to their respective masses.
+/// 
+/// - Raul Vera 2018
+/// </summary>
 [UpdateBefore(typeof(ForceVelocitySystem))]
 [UpdateAfter(typeof(SpringFromEntitiesSystem))]
 public class MassSpringForceSystem : JobComponentSystem {
@@ -26,6 +37,9 @@ public class MassSpringForceSystem : JobComponentSystem {
   [Inject] private MassData _massData;
   [Inject] private SpringData _springData;
 
+  /// <summary>
+  /// Creation of the hashMap
+  /// </summary>
   [BurstCompile]
   struct HashMassSpringJob : IJobParallelFor {
     public NativeMultiHashMap<Entity, int>.Concurrent _hashMap;
@@ -48,17 +62,17 @@ public class MassSpringForceSystem : JobComponentSystem {
 
     void ApplySpringForce(int massIndex, int springIndex) {
       Entity massEntity = _massEntities[massIndex];
-      float3 force = new float3(0,0,0);
+      float3 force = new float3(0, 0, 0);
       float3 dir = (_springLines[springIndex].p2 - _springLines[springIndex].p1);
       float dist = math.length(dir);
       float refDist = _springLines[springIndex].length;
-      if (dist > refDist*refDist)
-        force = dir/dist*math.min(dist-refDist,1)*_springElasticities[springIndex].Value;
-      if (massEntity == _springEntityPairs[springIndex].E2) 
+      if (dist > refDist * refDist)
+        force = dir / dist * math.min(dist - refDist, 1) * _springElasticities[springIndex].Value;
+      if (massEntity == _springEntityPairs[springIndex].E2)
         force = -force;
 
-      _massPhysicals[massIndex] = new Physical { 
-        Force = _massPhysicals[massIndex].Force + force, 
+      _massPhysicals[massIndex] = new Physical {
+        Force = _massPhysicals[massIndex].Force + force,
         InverseMass = _massPhysicals[massIndex].InverseMass
       };
     }
@@ -78,7 +92,7 @@ public class MassSpringForceSystem : JobComponentSystem {
     if (_massData.Length == 0 || _springData.Length == 0)
       return inputDeps;
 
-    NativeMultiHashMap<Entity, int> hashMap = new NativeMultiHashMap<Entity,int>(_massData.Length*4, Allocator.Temp);
+    NativeMultiHashMap<Entity, int> hashMap = new NativeMultiHashMap<Entity, int>(_massData.Length * 4, Allocator.Temp);
 
     HashMassSpringJob hashMassSpringJob = new HashMassSpringJob {
       _hashMap = hashMap,

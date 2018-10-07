@@ -6,6 +6,11 @@ using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
 
+/// <summary>
+/// System used to convert recieved forces into velocity.
+/// 
+/// - Raul Vera 2018
+/// </summary>
 [UpdateBefore(typeof(VelocityMovementSystem))]
 public class ForceVelocitySystem : JobComponentSystem {
   public const float STABILITY_THERESHOLD = 0.0001f;

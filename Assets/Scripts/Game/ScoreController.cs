@@ -1,16 +1,25 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using TMPro;
 using System;
 
+/// <summary>
+/// Class managing the score in the game
+/// 
+/// - Raul Vera 2018
+/// </summary>
 public class ScoreController : MonoBehaviour {
+	/// <summary>
+	/// Lazy static reference to an instance of this class.
+	/// </summary>
 	public static ScoreController instance;
+
+	/// <summary>
+	/// Reference to a text mesh used to display the current score number.
+	/// </summary>
 	public TextMeshProUGUI scoreText;
+
 	private int currentScore;
-
-
-	// Use this for initialization
+	
 	void Start () {
 		instance = this;
 		UpdateScore();

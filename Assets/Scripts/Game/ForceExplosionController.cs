@@ -1,13 +1,16 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Contains parameters for the ForceGeneratorComponent and
+/// automatically destroys it after the specified time.
+/// - Raul Vera 2018
+/// </summary>
 public class ForceExplosionController : MonoBehaviour {
 	public float force;
 	public float distance;
 	public float duration;
 
-	// Use this for initialization
 	void Start () {
 		StartCoroutine(DelayedDestroy(duration));
 	}

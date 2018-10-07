@@ -1,3 +1,9 @@
+/// <summary>
+/// Based on kejiro's Firefly project (https://github.com/keijiro/Firefly)
+/// It is used in the LineMeshBuilderSystem to have a counter accesible from
+/// multiple threads and use its value to fill two triangles of mesh information.
+/// </summary>
+
 // Slightly modified version of NativeCounter provided in EntityComponentSystemSamples
 // Only Increment() was modified to return the old count value.
 

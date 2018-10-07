@@ -1,11 +1,20 @@
+using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
-using Unity.Burst;
 using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
 
+/// <summary>
+/// System used to generate the interactions betwen force generators and recievers.
+/// 
+/// Recievers in this case are the grid nodes, and generators are explosions and stuff.
+/// Since the ForceGenerator component is defined with no direction data, forces are
+/// assumed to be radially generated.
+/// 
+/// - Raul Vera 2018
+/// </summary>
 [UpdateBefore(typeof(ForceVelocitySystem))]
 [UpdateAfter(typeof(CopyTransformToGameObject))]
 public class ForceInfluenceSystem : JobComponentSystem {
@@ -16,7 +25,7 @@ public class ForceInfluenceSystem : JobComponentSystem {
   }
 
   [Inject] private ForceRecievers forceRecievers;
-  
+
   public struct ForceGenerators {
     public readonly int Length;
     [ReadOnly] public ComponentDataArray<Position> position;
@@ -34,13 +43,13 @@ public class ForceInfluenceSystem : JobComponentSystem {
     [ReadOnly] public int generatorCount;
 
     public void Execute(int i) {
-      // V1
       for (int j = 0; j < generatorCount; ++j) {
         float3 distance = recieverPositions[i].Value - generatorPositions[j].Value;
         float distanceMagSqr = math.lengthSquared(distance);
         if (distanceMagSqr < generatorForces[j].distance * generatorForces[j].distance) {
+          // Linear decay over distance
           float f = 1 - math.sqrt(distanceMagSqr) / generatorForces[j].distance;
-          recieverPhysicals[i] = new Physical{ 
+          recieverPhysicals[i] = new Physical {
             Force = recieverPhysicals[i].Force + math.normalize(distance) * f * f * generatorForces[j].force,
             InverseMass = recieverPhysicals[i].InverseMass
           };

@@ -1,30 +1,50 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
+/// <summary>
+/// Class containing basic behaviour of an enemy.
+/// Enemies try to follow the player and can be destroyed if shoot.
+/// Explosions are generated on the following events:
+/// 	- On creation
+/// 	- On hit by bullet
+/// 	- On destruction
+/// 
+/// - Raul Vera 2018
+/// </summary>
 public class EnemyController : MonoBehaviour {
+	/// Hit particles prefab
 	public GameObject particlesPrefab;
+
+	/// Explosion object prefab
 	public GameObject explosionPrefab;
+
+	/// Creation explosion parameters
 	public float creationForce;
 	public float creationDuration;
 	public float creationDistance;
+
+	/// Hit explosion parameters
 	public float hitForce;
 	public float hitDuration;
 	public float hitDistance;
+
+	/// Death explosion parameters
 	public float deathForce;
 	public float deathDuration;
 	public float deathDistance;
 
+	/// Enemy parameteres
 	public float accel;
 	public float maxSpeed;
-	private Vector3 vel;
 	public float life;
 
+	private Vector3 vel;
 	private Rigidbody rb;
 	private PlayerController player;
 
-	// Use this for initialization
-	void Start () {
+	/// <summary>
+	/// Setup references and make creation explosion. 
+	/// </summary>
+	void Start() {
 		rb = GetComponent<Rigidbody>();
 		player = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
 
@@ -33,15 +53,21 @@ public class EnemyController : MonoBehaviour {
 		explosion.duration = creationDuration;
 		explosion.distance = creationDistance;
 	}
-	
-	// Update is called once per frame
-	void FixedUpdate () {
+
+	/// <summary>
+	/// Move the enemy
+	/// </summary>
+	void FixedUpdate() {
 		Vector3 dir = (player.transform.position - transform.position).normalized;
 		vel += dir * accel * Time.deltaTime;
 		vel = Vector3.ClampMagnitude(vel, maxSpeed);
 		rb.velocity = vel;
 	}
 
+	/// <summary>
+	/// Check bullet collisions and create hit explosions and effects.
+	/// Also destroy self if life reached zero.
+	/// </summary>
 	void OnTriggerEnter(Collider other) {
 		if (other.CompareTag("Bullet")) {
 			BulletController bullet = other.GetComponent<BulletController>();

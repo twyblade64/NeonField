@@ -12,12 +12,18 @@ using UnityEngine;
 using UnityEngine.Experimental.PlayerLoop;
 using UnityEngine.Rendering;
 
+/// <summary>
+/// This system prepares each of the line meshes in the grid before rendering them.
+/// 
+/// - Raul Vera 2018
+/// </summary>
 [UpdateBefore(typeof(SpringRendererSystem))]
 [UpdateAfter(typeof(SpringFromEntitiesSystem))]
 public class LineMeshBuilderSystem : JobComponentSystem {
   private struct Dependencies {
     [ReadOnly] public SharedComponentDataArray<LineRenderer> _LineRenderers;
   }
+
   [Inject] Dependencies _dependencies;
 
   private ComponentGroup group;
@@ -39,12 +45,12 @@ public class LineMeshBuilderSystem : JobComponentSystem {
 
     public void Execute(int i) {
 
-      float3 perp = math.normalize(math.cross((_lines[i].p2 - _lines[i].p1), new float3(0,1,0))) * 0.5f * _lines[i].width;
+      float3 perp = math.normalize(math.cross((_lines[i].p2 - _lines[i].p1), new float3(0, 1, 0))) * 0.5f * _lines[i].width;
       float3 p0 = _lines[i].p1 - perp;
       float3 p1 = _lines[i].p1 + perp;
       float3 p2 = _lines[i].p2 - perp;
       float3 p3 = _lines[i].p2 + perp;
-      
+
       int vertIndex = _counter.Increment() * 4;
 
       UnsafeUtility.WriteArrayElement(_vertices, vertIndex + 0, (Vector3) p0);
@@ -68,7 +74,6 @@ public class LineMeshBuilderSystem : JobComponentSystem {
   protected override JobHandle OnUpdate(JobHandle inputDeps) {
     EntityManager.GetAllUniqueSharedComponentDatas(lineRenderers);
 
-    
     NativeCounter lineCounter = new NativeCounter(Allocator.Temp);
     LineMeshBuilderJob job = new LineMeshBuilderJob();
     for (int i = 0; i < lineRenderers.Count; ++i) {
@@ -87,5 +92,5 @@ public class LineMeshBuilderSystem : JobComponentSystem {
     lineCounter.Dispose();
     return inputDeps;
   }
-  
+
 }

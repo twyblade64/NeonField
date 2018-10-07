@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Text;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
@@ -8,9 +10,12 @@ using Unity.Transforms;
 using UnityEngine;
 using UnityEngine.Experimental.PlayerLoop;
 using UnityEngine.Rendering;
-using System.Collections.Generic;
-using System.Text;
 
+/// <summary>
+/// This system renders all the lines meshes.
+/// 
+/// - Raul Vera 2018
+/// </summary>
 [UpdateAfter(typeof(PreLateUpdate.ParticleSystemBeginUpdateAll))]
 [UpdateAfter(typeof(MeshCullingBarrier))]
 //[UnityEngine.ExecuteInEditMode]
@@ -21,7 +26,7 @@ public class SpringRendererSystem : ComponentSystem {
 
   protected override void OnCreateManager(int capacity) {
     _dependency = GetComponentGroup(
-       typeof(Spring), typeof(LineRenderer)
+      typeof(Spring), typeof(LineRenderer)
     );
     gridLayer = LayerMask.NameToLayer("Grid");
   }
@@ -38,10 +43,10 @@ public class SpringRendererSystem : ComponentSystem {
       var meshIsReady = mesh.vertexCount > 0;
 
       mesh.vertices = render.Vertices;
-      mesh.normals = render.Normals; 
+      mesh.normals = render.Normals;
 
       UnityEngine.Graphics.DrawMesh(
-          mesh, identityMatrix, render.Material, gridLayer
+        mesh, identityMatrix, render.Material, gridLayer
       );
     }
     rendererList.Clear();

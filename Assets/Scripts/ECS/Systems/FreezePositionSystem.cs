@@ -6,7 +6,13 @@ using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
 
-[UpdateAfter(typeof(VelocityMovementSystem))]
+/// <summary>
+/// This system resets uses a bitmask to reset an specific axis of the position component to 0.
+/// Used to force all the grid movement in a 2D plane. Otherwise, nodes sometimes move in the Y-axis
+/// affecting the final grid behaviour.
+/// 
+/// - Raul Vera 2018
+/// </summary>
 public class FreezePositionSystem : JobComponentSystem {
   [BurstCompile]
   struct FreezePositionJob : IJobProcessComponentData<Position, FreezeAxis> {
