@@ -9,7 +9,9 @@ using UnityEngine;
 [Serializable]
 public struct Elasticity : IComponentData {
 	/// How elastic it is.
-	public float Value;
+	public float YoungModulus;
+	/// Original length
+	public float ReferenceLength;
 }
 
 /// <summary>
@@ -57,18 +59,20 @@ public struct LineRenderer : ISharedComponentData {
 }
 
 /// <summary>
-/// Component representing an entity that behaves like a spring
+/// Component representing a line
 /// </summary>
 [Serializable]
-public struct Spring : IComponentData {
-	/// The starting point of the spring.
-	public float3 p1;
-	/// The ending point of the spring.
-	public float3 p2;
-	/// The original length of the spring.
-	public float length;
-	/// The thickness of the spring.
-	public float width;
+public struct Line : IComponentData {
+	public float3 P1;
+	public float3 P2;
+}
+
+/// <summary>
+/// Component representing an entity that has thickness.
+/// </summary>
+[Serializable]
+public struct Thickness : IComponentData {
+	public float Value;
 }
 
 /// <summary>

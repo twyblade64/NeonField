@@ -17,9 +17,9 @@ using UnityEngine.Rendering;
 /// 
 /// - Raul Vera 2018
 /// </summary>
-[UpdateBefore(typeof(SpringRendererSystem))]
-[UpdateAfter(typeof(SpringFromEntitiesSystem))]
-public class LineMeshBuilderSystem : JobComponentSystem {
+[UpdateBefore(typeof(LineRendererSystem))]
+[UpdateAfter(typeof(LineFromEntityPairSystem))]
+public class ThickLineMeshBuilderSystem : JobComponentSystem {
   private struct Dependencies {
     [ReadOnly] public SharedComponentDataArray<LineRenderer> _LineRenderers;
   }
@@ -30,14 +30,16 @@ public class LineMeshBuilderSystem : JobComponentSystem {
   private List<LineRenderer> lineRenderers = new List<LineRenderer>();
 
   unsafe struct LineMeshBuilderJob : IJobParallelFor {
-    [ReadOnly] ComponentDataArray<Spring> _lines;
+    [ReadOnly] ComponentDataArray<Thickness> _thicknesses;
+    [ReadOnly] ComponentDataArray<Line> _lines;
     [NativeDisableUnsafePtrRestriction] void * _vertices;
     [NativeDisableUnsafePtrRestriction] void * _normals;
 
     NativeCounter.Concurrent _counter;
 
     public void Initialize(ComponentGroup group, Vector3[] vertices, Vector3[] normals, NativeCounter.Concurrent counter) {
-      _lines = group.GetComponentDataArray<Spring>();
+      _thicknesses = group.GetComponentDataArray<Thickness>();
+      _lines = group.GetComponentDataArray<Line>();
       _vertices = UnsafeUtility.AddressOf(ref vertices[0]);
       _normals = UnsafeUtility.AddressOf(ref normals[0]);
       _counter = counter;
@@ -45,11 +47,11 @@ public class LineMeshBuilderSystem : JobComponentSystem {
 
     public void Execute(int i) {
 
-      float3 perp = math.normalize(math.cross((_lines[i].p2 - _lines[i].p1), new float3(0, 1, 0))) * 0.5f * _lines[i].width;
-      float3 p0 = _lines[i].p1 - perp;
-      float3 p1 = _lines[i].p1 + perp;
-      float3 p2 = _lines[i].p2 - perp;
-      float3 p3 = _lines[i].p2 + perp;
+      float3 perp = math.normalize(math.cross((_lines[i].P2 - _lines[i].P1), new float3(0, 1, 0))) * 0.5f * _thicknesses[i].Value;
+      float3 p0 = _lines[i].P1 - perp;
+      float3 p1 = _lines[i].P1 + perp;
+      float3 p2 = _lines[i].P2 - perp;
+      float3 p3 = _lines[i].P2 + perp;
 
       int vertIndex = _counter.Increment() * 4;
 
@@ -67,7 +69,7 @@ public class LineMeshBuilderSystem : JobComponentSystem {
 
   protected override void OnCreateManager(int capacity) {
     group = GetComponentGroup(
-      typeof(LineRenderer), typeof(Spring)
+      typeof(LineRenderer), typeof(Line), typeof(Thickness)
     );
   }
 
@@ -76,6 +78,7 @@ public class LineMeshBuilderSystem : JobComponentSystem {
 
     NativeCounter lineCounter = new NativeCounter(Allocator.Temp);
     LineMeshBuilderJob job = new LineMeshBuilderJob();
+
     for (int i = 0; i < lineRenderers.Count; ++i) {
       LineRenderer renderer = lineRenderers[i];
 

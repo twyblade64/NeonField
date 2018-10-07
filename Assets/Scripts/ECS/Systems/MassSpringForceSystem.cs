@@ -19,7 +19,7 @@ using UnityEngine;
 /// - Raul Vera 2018
 /// </summary>
 [UpdateBefore(typeof(ForceVelocitySystem))]
-[UpdateAfter(typeof(SpringFromEntitiesSystem))]
+[UpdateAfter(typeof(LineFromEntityPairSystem))]
 public class MassSpringForceSystem : JobComponentSystem {
   public struct MassData {
     public readonly int Length;
@@ -31,7 +31,7 @@ public class MassSpringForceSystem : JobComponentSystem {
     public readonly int Length;
     [ReadOnly] public ComponentDataArray<EntityPair> EntityPairs;
     [ReadOnly] public ComponentDataArray<Elasticity> Elasticities;
-    [ReadOnly] public ComponentDataArray<Spring> Lines;
+    [ReadOnly] public ComponentDataArray<Line> Lines;
   }
 
   [Inject] private MassData _massData;
@@ -56,18 +56,18 @@ public class MassSpringForceSystem : JobComponentSystem {
     [ReadOnly] public NativeMultiHashMap<Entity, int> _massSpringHashMap;
     [ReadOnly] public ComponentDataArray<EntityPair> _springEntityPairs;
     [ReadOnly] public ComponentDataArray<Elasticity> _springElasticities;
-    [ReadOnly] public ComponentDataArray<Spring> _springLines;
+    [ReadOnly] public ComponentDataArray<Line> _springLines;
     [ReadOnly] public EntityArray _massEntities;
     public ComponentDataArray<Physical> _massPhysicals;
 
     void ApplySpringForce(int massIndex, int springIndex) {
       Entity massEntity = _massEntities[massIndex];
       float3 force = new float3(0, 0, 0);
-      float3 dir = (_springLines[springIndex].p2 - _springLines[springIndex].p1);
+      float3 dir = (_springLines[springIndex].P2 - _springLines[springIndex].P1);
       float dist = math.length(dir);
-      float refDist = _springLines[springIndex].length;
+      float refDist = _springElasticities[springIndex].ReferenceLength;
       if (dist > refDist * refDist)
-        force = dir / dist * math.min(dist - refDist, 1) * _springElasticities[springIndex].Value;
+        force = dir / dist * math.min(dist - refDist, 1) * _springElasticities[springIndex].YoungModulus;
       if (massEntity == _springEntityPairs[springIndex].E2)
         force = -force;
 

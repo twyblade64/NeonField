@@ -7,15 +7,15 @@ using Unity.Transforms;
 using UnityEngine;
 
 /// <summary>
-/// This system defines an spring location using two entities and their positions.
+/// This system defines an line location using two entities and their positions.
 /// It's used to build the spring between the grid nodes.
 /// 
 /// - Raul Vera 2018
 /// </summary>
-public class SpringFromEntitiesSystem : JobComponentSystem {
+public class LineFromEntityPairSystem : JobComponentSystem {
   public struct Data {
     public readonly int Length;
-    public ComponentDataArray<Spring> springs;
+    public ComponentDataArray<Line> lines;
     [ReadOnly] public ComponentDataArray<EntityPair> entityPairs;
   }
 
@@ -24,15 +24,14 @@ public class SpringFromEntitiesSystem : JobComponentSystem {
 
   [BurstCompile]
   struct LineFromEntitiesJob : IJobParallelFor {
-    public ComponentDataArray<Spring> _springs;
+    public ComponentDataArray<Line> _lines;
     [ReadOnly] public ComponentDataArray<EntityPair> _entityPairs;
     [ReadOnly] public ComponentDataFromEntity<Position> _positions;
 
     public void Execute(int i) {
-      _springs[i] = new Spring {
-        p1 = _positions[_entityPairs[i].E1].Value,
-        p2 = _positions[_entityPairs[i].E2].Value,
-        width = _springs[i].width
+      _lines[i] = new Line {
+        P1 = _positions[_entityPairs[i].E1].Value,
+        P2 = _positions[_entityPairs[i].E2].Value
       };
     }
   }
@@ -42,7 +41,7 @@ public class SpringFromEntitiesSystem : JobComponentSystem {
       return inputDeps;
 
     LineFromEntitiesJob job = new LineFromEntitiesJob {
-      _springs = _data.springs,
+      _lines = _data.lines,
       _entityPairs = _data.entityPairs,
       _positions = _positions
     };

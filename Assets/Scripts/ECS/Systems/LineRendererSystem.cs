@@ -18,15 +18,14 @@ using UnityEngine.Rendering;
 /// </summary>
 [UpdateAfter(typeof(PreLateUpdate.ParticleSystemBeginUpdateAll))]
 [UpdateAfter(typeof(MeshCullingBarrier))]
-//[UnityEngine.ExecuteInEditMode]
-public class SpringRendererSystem : ComponentSystem {
+public class LineRendererSystem : ComponentSystem {
   List<LineRenderer> rendererList = new List<LineRenderer>();
   private ComponentGroup _dependency;
   private int gridLayer;
 
   protected override void OnCreateManager(int capacity) {
     _dependency = GetComponentGroup(
-      typeof(Spring), typeof(LineRenderer)
+      typeof(Line), typeof(LineRenderer)
     );
     gridLayer = LayerMask.NameToLayer("Grid");
   }

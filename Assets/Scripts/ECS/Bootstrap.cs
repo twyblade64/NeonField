@@ -75,8 +75,8 @@ public sealed class Bootstrap : MonoBehaviour {
     // The spring archetype contains the reference to two nodes and the spring forces in them.
     // Also used to render the line between them
     SpringArchetype = entityManager.CreateArchetype(
-      typeof(Spring), typeof(EntityPair),
-      typeof(Elasticity), typeof(LineRenderer)
+      typeof(Line), typeof(EntityPair),
+      typeof(Elasticity), typeof(Thickness), typeof(LineRenderer)
     );
   }
 
@@ -140,13 +140,16 @@ public sealed class Bootstrap : MonoBehaviour {
       // Horizontal springs. No horizontal spring on final column.
       if (i % xNodes != xNodes - 1) { 
         // Spring component. Spring position will be updated in system, so no need to do it here. Use base horizontal spring length.
-        entityManager.SetComponentData(springEntities[springIndex], new Spring { p1 = new float3(0, 0, 0), p2 = new float3(0, 0, 0), length = hSpringLength, width = nodeWidth });
+        entityManager.SetComponentData(springEntities[springIndex], new Line { P1 = new float3(0, 0, 0), P2 = new float3(0, 0, 0)});
 
         // Setup node references
         entityManager.SetComponentData(springEntities[springIndex], new EntityPair { E1 = nodeEntities[i], E2 = nodeEntities[i + 1] });
 
         // Spring elasticity
-        entityManager.SetComponentData(springEntities[springIndex], new Elasticity { Value = nodeElasticity });
+        entityManager.SetComponentData(springEntities[springIndex], new Elasticity { YoungModulus = nodeElasticity, ReferenceLength = hSpringLength });
+
+        // Springthickness
+        entityManager.SetComponentData(springEntities[springIndex], new Thickness() { Value = nodeWidth});
 
         // Spring lineRenderer
         entityManager.SetSharedComponentData(springEntities[springIndex], lineRenderer);
@@ -158,13 +161,16 @@ public sealed class Bootstrap : MonoBehaviour {
       // Vertical springs. No vertical spring on final row.
       if (i / xNodes != yNodes - 1) { 
         // Spring component. Spring position will be updated in system, so no need to do it here. Use base vertical spring length.
-        entityManager.SetComponentData(springEntities[springIndex], new Spring { p1 = new float3(0, 0, 0), p2 = new float3(0, 0, 0), length = vSpringLength, width = nodeWidth });
+        entityManager.SetComponentData(springEntities[springIndex], new Line { P1 = new float3(0, 0, 0), P2 = new float3(0, 0, 0)});
         
         // Setup node references
         entityManager.SetComponentData(springEntities[springIndex], new EntityPair { E1 = nodeEntities[i], E2 = nodeEntities[i + xNodes] });
         
         // Spring elasticity
-        entityManager.SetComponentData(springEntities[springIndex], new Elasticity { Value = nodeElasticity });
+        entityManager.SetComponentData(springEntities[springIndex], new Elasticity { YoungModulus = nodeElasticity, ReferenceLength = vSpringLength });
+
+        // Springthickness
+        entityManager.SetComponentData(springEntities[springIndex], new Thickness() { Value = nodeWidth});
         
         // Spring lineRenderer
         entityManager.SetSharedComponentData(springEntities[springIndex], lineRenderer);
