@@ -27,7 +27,7 @@ public class FreezePositionSystem : JobComponentSystem {
 
   protected override JobHandle OnUpdate(JobHandle inputDeps) {
     FreezePositionJob job = new FreezePositionJob();
-    JobHandle jobHandle = job.Schedule(this, 64, inputDeps);
+    JobHandle jobHandle = job.Schedule(this, inputDeps);
     return jobHandle;
   }
 }

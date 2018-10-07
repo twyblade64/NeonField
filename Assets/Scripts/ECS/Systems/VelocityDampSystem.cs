@@ -36,7 +36,7 @@ public class VelocityDampSystem : JobComponentSystem {
       deltaTime = Time.deltaTime
     };
 
-    JobHandle jobHandle = job.Schedule(this, 64, inputDeps);
+    JobHandle jobHandle = job.Schedule(this, inputDeps);
     return jobHandle;
   }
 }

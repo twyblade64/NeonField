@@ -31,7 +31,7 @@ public class ForceVelocitySystem : JobComponentSystem {
       deltaTime = math.min(Time.deltaTime, 1f/30)
     };
 
-    JobHandle jobHandle = job.Schedule(this, 64, inputDeps);
+    JobHandle jobHandle = job.Schedule(this, inputDeps);
     return jobHandle;
   }
 }
