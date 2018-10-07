@@ -138,14 +138,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bulletPrefab: {fileID: 1278458048815254, guid: 143b0e6595a305245892769950178a10,
     type: 2}
-  accel: 50
+  accel: 1000
   maxSpeed: 10
-  drag: 0.2
+  damp: 0.1
   shotSpeed: 25
   shotDamage: 1
   shootVSep: 0.6
   shootHSep: 0.45
   shootTime: 0.05
+  movementDeadzone: 0
+  smoothInputFactor: 0.2
+  smoothMovementSteerFactor: 0.2
+  smoothFiringSteerFactor: 0.4
 --- !u!114 &114856775363726454
 MonoBehaviour:
   m_ObjectHideFlags: 1

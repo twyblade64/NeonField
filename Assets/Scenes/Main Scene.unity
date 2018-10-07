@@ -286,13 +286,10 @@ MonoBehaviour:
     height: 24
   xNodes: 180
   yNodes: 120
-  startHeight: 0
-  nodeMesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
   nodeMaterial: {fileID: 2100000, guid: d0991afe3aa9c0b45b75c9d89de6f22d, type: 2}
   nodeElasticity: 200
-  nodeDrag: 0.8
+  nodeDamp: 0.8
   nodeWidth: 0.075
-  gridMaterial: {fileID: 2100000, guid: 6833a623d1b4df54abdfe933a1483a27, type: 2}
 --- !u!1 &598300061
 GameObject:
   m_ObjectHideFlags: 0
@@ -491,9 +488,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2e0c0dfd09321848852070df1f0de3e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spaceRatio: 1.6666666
-  marginRatio: 1.666667
-  followObject: {fileID: 79498435}
+  _targetBounds: {x: 18, y: 12}
+  _cameraBounds: {x: 10, y: 7}
+  _limitCamera: 1
+  _followTarget: {fileID: 79498435}
 --- !u!1 &677447867
 GameObject:
   m_ObjectHideFlags: 0
@@ -635,7 +633,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &767377423
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -826,7 +824,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1123578183
 MonoBehaviour:
   m_ObjectHideFlags: 0
