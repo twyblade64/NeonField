@@ -95,7 +95,7 @@ public class MassSpringForceSystem : JobComponentSystem {
     NativeMultiHashMap<Entity, int> hashMap = new NativeMultiHashMap<Entity, int>(_massData.Length * 4, Allocator.Temp);
 
     HashMassSpringJob hashMassSpringJob = new HashMassSpringJob {
-      _hashMap = hashMap,
+      _hashMap = hashMap.ToConcurrent(),
       _springEntityPairs = _springData.EntityPairs
     };
 

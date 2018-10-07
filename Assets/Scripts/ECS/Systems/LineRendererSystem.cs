@@ -22,7 +22,7 @@ public class LineRendererSystem : ComponentSystem {
   private ComponentGroup _dependency;
   private int gridLayer;
 
-  protected override void OnCreateManager(int capacity) {
+  protected override void OnCreateManager() {
     _dependency = GetComponentGroup(
       typeof(Line), typeof(LineRenderer)
     );

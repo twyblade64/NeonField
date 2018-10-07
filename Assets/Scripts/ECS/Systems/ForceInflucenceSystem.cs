@@ -45,7 +45,7 @@ public class ForceInfluenceSystem : JobComponentSystem {
     public void Execute(int i) {
       for (int j = 0; j < generatorCount; ++j) {
         float3 distance = recieverPositions[i].Value - generatorPositions[j].Value;
-        float distanceMagSqr = math.lengthSquared(distance);
+        float distanceMagSqr = math.lengthsq(distance);
         if (distanceMagSqr < generatorForces[j].distance * generatorForces[j].distance) {
           // Linear decay over distance
           float f = 1 - math.sqrt(distanceMagSqr) / generatorForces[j].distance;

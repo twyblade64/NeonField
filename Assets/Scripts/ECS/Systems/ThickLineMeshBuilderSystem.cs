@@ -67,7 +67,7 @@ public class ThickLineMeshBuilderSystem : JobComponentSystem {
     }
   }
 
-  protected override void OnCreateManager(int capacity) {
+  protected override void OnCreateManager() {
     group = GetComponentGroup(
       typeof(LineRenderer), typeof(Line), typeof(Thickness)
     );

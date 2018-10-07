@@ -24,7 +24,7 @@ public class VelocityDampSystem : JobComponentSystem {
 
     public void Execute(ref Velocity vel, [ReadOnly] ref Damper damper) {
       float3 v = vel.Value * damper.Value;
-      if (math.lengthSquared(v) > STABILITY_THERESHOLD)
+      if (math.lengthsq(v) > STABILITY_THERESHOLD)
         vel = new Velocity { Value = v };
       else
         vel = new Velocity { Value = new float3(0, 0, 0) };

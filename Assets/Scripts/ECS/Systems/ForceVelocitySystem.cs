@@ -20,7 +20,7 @@ public class ForceVelocitySystem : JobComponentSystem {
     public float deltaTime;
 
     public void Execute(ref Velocity vel, ref Physical phys) {
-      if (math.lengthSquared(phys.Force) > STABILITY_THERESHOLD)
+      if (math.lengthsq(phys.Force) > STABILITY_THERESHOLD)
         vel.Value +=  phys.Force * deltaTime * phys.InverseMass;
       phys.Force = new float3(0,0,0);
     }
