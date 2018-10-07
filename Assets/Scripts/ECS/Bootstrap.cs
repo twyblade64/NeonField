@@ -38,7 +38,6 @@ public sealed class Bootstrap : MonoBehaviour {
       typeof(Elasticity), typeof(LineRenderer)
     );
 
-    World.Active.GetExistingManager<MeshRenderSystem>().Enabled = false;
   }
 
   public void Start() {

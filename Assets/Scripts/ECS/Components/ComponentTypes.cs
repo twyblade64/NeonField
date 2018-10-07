@@ -4,11 +4,6 @@ using Unity.Mathematics;
 using UnityEngine;
 
 [Serializable]
-public struct Anchor : IComponentData {
-	public float3 Value;
-}
-
-[Serializable]
 public struct Elasticity : IComponentData {
 	public float Value;
 }
@@ -30,23 +25,7 @@ public struct Damper : IComponentData {
 }
 
 [Serializable]
-public struct GridPosition : IComponentData {
-	public int2 Value;
-}
-
-[Serializable]
-public struct GridRenderer : ISharedComponentData {
-	public Material Material;
-	public float Width;
-	public int2 Size;
-	public Mesh WorkMesh;
-	public Vector3[] Vertices;
-	public Vector3[] Normals;
-}
-
-[Serializable]
 public struct LineRenderer : ISharedComponentData {
-	public const int MaxVertices = 510000;
 	public Mesh WorkMesh;
 	public Material Material;
 	public Vector3[] Vertices;
@@ -73,7 +52,8 @@ public struct FreezeAxis : IComponentData {
 		NONE 	= 0,
 		X			= 1,
 		Y			= 2,
-		Z			= 4
+		Z			= 4,
+		ALL = 7
 	}
 
 	public AxisMask FreezeMask;

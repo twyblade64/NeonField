@@ -12,8 +12,8 @@ using UnityEngine;
 using UnityEngine.Experimental.PlayerLoop;
 using UnityEngine.Rendering;
 
-[UpdateBefore(typeof(LineRendererSystem))]
-[UpdateAfter(typeof(LineFromEntitiesSystem))]
+[UpdateBefore(typeof(SpringRendererSystem))]
+[UpdateAfter(typeof(SpringFromEntitiesSystem))]
 public class LineMeshBuilderSystem : JobComponentSystem {
   private struct Dependencies {
     [ReadOnly] public SharedComponentDataArray<LineRenderer> _LineRenderers;

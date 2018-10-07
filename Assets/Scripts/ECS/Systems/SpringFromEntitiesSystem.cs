@@ -6,7 +6,7 @@ using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
 
-public class LineFromEntitiesSystem : JobComponentSystem {
+public class SpringFromEntitiesSystem : JobComponentSystem {
   public struct Data {
     public readonly int Length;
     public ComponentDataArray<Spring> lines;

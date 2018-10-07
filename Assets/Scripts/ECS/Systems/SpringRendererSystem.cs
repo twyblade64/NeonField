@@ -14,7 +14,7 @@ using System.Text;
 [UpdateAfter(typeof(PreLateUpdate.ParticleSystemBeginUpdateAll))]
 [UpdateAfter(typeof(MeshCullingBarrier))]
 //[UnityEngine.ExecuteInEditMode]
-public class LineRendererSystem : ComponentSystem {
+public class SpringRendererSystem : ComponentSystem {
   List<LineRenderer> rendererList = new List<LineRenderer>();
   private ComponentGroup _dependency;
   private int gridLayer;

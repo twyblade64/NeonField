@@ -8,7 +8,7 @@ using UnityEngine;
 
 
 [UpdateBefore(typeof(ForceVelocitySystem))]
-[UpdateAfter(typeof(LineFromEntitiesSystem))]
+[UpdateAfter(typeof(SpringFromEntitiesSystem))]
 public class MassSpringForceSystem : JobComponentSystem {
   public struct MassData {
     public readonly int Length;
