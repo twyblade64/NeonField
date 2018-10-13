@@ -13,13 +13,12 @@ using UnityEngine;
 /// 
 /// - Raul Vera 2018
 /// </summary>
-[UpdateBefore(typeof(ForceInfluenceSystem))]
+
+[UpdateInGroup(typeof(PhysicUpdate))]
 public class CopyForceFromExplosionSystem : ComponentSystem {
   public struct Data {
     public readonly int Length;
     public ComponentDataArray<ForceGenerator> forceGenerator;
-    //public ComponentDataArray<Position> positions;
-    //[ReadOnly] public ComponentArray<Transform> transform;
     [ReadOnly] public ComponentArray<ForceExplosionController> forceExplosion;
     [ReadOnly] public ComponentDataArray<CopyForceFromExplosion> copyForceFromExplosion;
   }

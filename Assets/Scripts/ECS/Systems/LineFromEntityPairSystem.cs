@@ -12,6 +12,8 @@ using UnityEngine;
 /// 
 /// - Raul Vera 2018
 /// </summary>
+
+[UpdateInGroup(typeof(PhysicUpdate))]
 public class LineFromEntityPairSystem : JobComponentSystem {
   public struct Data {
     public readonly int Length;

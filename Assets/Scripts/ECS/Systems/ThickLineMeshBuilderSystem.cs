@@ -17,8 +17,7 @@ using UnityEngine.Rendering;
 /// 
 /// - Raul Vera 2018
 /// </summary>
-[UpdateBefore(typeof(LineRendererSystem))]
-[UpdateAfter(typeof(LineFromEntityPairSystem))]
+
 public class ThickLineMeshBuilderSystem : JobComponentSystem {
   private struct Dependencies {
     [ReadOnly] public SharedComponentDataArray<LineRenderer> _LineRenderers;

@@ -5,13 +5,17 @@ using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
+using UnityEngine.Experimental.PlayerLoop;
 
 /// <summary>
 /// System used to convert recieved forces into velocity.
 /// 
 /// - Raul Vera 2018
 /// </summary>
-[UpdateBefore(typeof(VelocityMovementSystem))]
+
+[UpdateInGroup(typeof(PhysicUpdate))]
+[UpdateAfter(typeof(ForceInfluenceSystem))]
+[UpdateAfter(typeof(MassSpringForceSystem))]
 public class ForceVelocitySystem : JobComponentSystem {
   public const float STABILITY_THERESHOLD = 0.0001f;
 
@@ -20,7 +24,6 @@ public class ForceVelocitySystem : JobComponentSystem {
     public float deltaTime;
 
     public void Execute(ref Velocity vel, ref Physical phys) {
-      if (math.lengthsq(phys.Force) > STABILITY_THERESHOLD)
         vel.Value +=  phys.Force * deltaTime * phys.InverseMass;
       phys.Force = new float3(0,0,0);
     }
@@ -28,7 +31,7 @@ public class ForceVelocitySystem : JobComponentSystem {
 
   protected override JobHandle OnUpdate(JobHandle inputDeps) {
     ApplyForceJob job = new ApplyForceJob {
-      deltaTime = math.min(Time.deltaTime, 1f/30)
+      deltaTime = Time.fixedDeltaTime
     };
 
     JobHandle jobHandle = job.Schedule(this, inputDeps);

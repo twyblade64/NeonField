@@ -5,6 +5,7 @@ using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
+using UnityEngine.Experimental.PlayerLoop;
 
 /// <summary>
 /// This system takes the spring and physical components 
@@ -18,7 +19,8 @@ using UnityEngine;
 /// 
 /// - Raul Vera 2018
 /// </summary>
-[UpdateBefore(typeof(ForceVelocitySystem))]
+
+[UpdateInGroup(typeof(PhysicUpdate))]
 [UpdateAfter(typeof(LineFromEntityPairSystem))]
 public class MassSpringForceSystem : JobComponentSystem {
   public struct MassData {
@@ -66,7 +68,7 @@ public class MassSpringForceSystem : JobComponentSystem {
       float3 dir = (_springLines[springIndex].P2 - _springLines[springIndex].P1);
       float dist = math.length(dir);
       float refDist = _springElasticities[springIndex].ReferenceLength;
-      if (dist > refDist * refDist)
+      if (dist > refDist)
         force = dir / dist * math.min(dist - refDist, 1) * _springElasticities[springIndex].YoungModulus;
       if (massEntity == _springEntityPairs[springIndex].E2)
         force = -force;

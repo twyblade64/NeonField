@@ -13,6 +13,8 @@ using UnityEngine;
 /// 
 /// - Raul Vera 2018
 /// </summary>
+
+[UpdateInGroup(typeof(PhysicUpdate))]
 public class FreezePositionSystem : JobComponentSystem {
   [BurstCompile]
   struct FreezePositionJob : IJobProcessComponentData<Position, FreezeAxis> {

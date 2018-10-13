@@ -5,6 +5,7 @@ using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
+using UnityEngine.Experimental.PlayerLoop;
 
 /// <summary>
 /// Slow-down the velocity of the entities.
@@ -12,7 +13,8 @@ using UnityEngine;
 /// 
 /// - Raul Vera 2018
 /// </summary>
-[UpdateBefore(typeof(VelocityMovementSystem))]
+
+[UpdateInGroup(typeof(PhysicUpdate))]
 [UpdateAfter(typeof(ForceVelocitySystem))]
 public class VelocityDampSystem : JobComponentSystem {
   /// Velocities bellow this value will be rounded down to 0 to avoid float-point imprecision
@@ -20,8 +22,6 @@ public class VelocityDampSystem : JobComponentSystem {
 
   [BurstCompile]
   struct VelocityDampJob : IJobProcessComponentData<Velocity, Damper> {
-    public float deltaTime;
-
     public void Execute(ref Velocity vel, [ReadOnly] ref Damper damper) {
       float3 v = vel.Value * damper.Value;
       if (math.lengthsq(v) > STABILITY_THERESHOLD)
@@ -32,9 +32,7 @@ public class VelocityDampSystem : JobComponentSystem {
   }
 
   protected override JobHandle OnUpdate(JobHandle inputDeps) {
-    VelocityDampJob job = new VelocityDampJob {
-      deltaTime = Time.deltaTime
-    };
+    VelocityDampJob job = new VelocityDampJob {};
 
     JobHandle jobHandle = job.Schedule(this, inputDeps);
     return jobHandle;

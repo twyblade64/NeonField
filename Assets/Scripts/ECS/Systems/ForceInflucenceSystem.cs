@@ -5,6 +5,7 @@ using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
+using UnityEngine.Experimental.PlayerLoop;
 
 /// <summary>
 /// System used to generate the interactions betwen force generators and recievers.
@@ -15,7 +16,9 @@ using UnityEngine;
 /// 
 /// - Raul Vera 2018
 /// </summary>
-[UpdateBefore(typeof(ForceVelocitySystem))]
+
+[UpdateInGroup(typeof(PhysicUpdate))]
+[UpdateAfter(typeof(CopyForceFromExplosion))]
 [UpdateAfter(typeof(CopyTransformToGameObject))]
 public class ForceInfluenceSystem : JobComponentSystem {
   public struct ForceRecievers {

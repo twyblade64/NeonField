@@ -5,12 +5,16 @@ using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
+using UnityEngine.Experimental.PlayerLoop;
 
 /// <summary>
 /// System to apply the current velocity to the position component.
 /// 
 /// - Raul Vera 2018
 /// </summary>
+
+[UpdateInGroup(typeof(PhysicUpdate))]
+[UpdateAfter(typeof(VelocityDampSystem))]
 public class VelocityMovementSystem : JobComponentSystem {
   [BurstCompile]
   struct MoveJob : IJobProcessComponentData<Position, Velocity> {
@@ -23,7 +27,7 @@ public class VelocityMovementSystem : JobComponentSystem {
 
   protected override JobHandle OnUpdate(JobHandle inputDeps) {
     MoveJob job = new MoveJob {
-      deltaTime = math.min(Time.deltaTime, 1f / 30)
+      deltaTime = Time.fixedDeltaTime
     };
 
     JobHandle jobHandle = job.Schedule(this, inputDeps);

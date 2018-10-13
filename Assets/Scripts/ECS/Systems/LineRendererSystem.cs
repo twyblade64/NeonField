@@ -16,7 +16,9 @@ using UnityEngine.Rendering;
 /// 
 /// - Raul Vera 2018
 /// </summary>
-[UpdateAfter(typeof(PreLateUpdate.ParticleSystemBeginUpdateAll))]
+
+[UpdateAfter(typeof(PreLateUpdate))]
+[UpdateAfter(typeof(ThickLineMeshBuilderSystem))]
 public class LineRendererSystem : ComponentSystem {
   List<LineRenderer> rendererList = new List<LineRenderer>();
   private ComponentGroup _dependency;
