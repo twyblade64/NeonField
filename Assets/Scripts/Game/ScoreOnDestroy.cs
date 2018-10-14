@@ -4,7 +4,7 @@
 /// Component that adds the specified score
 /// to the ScoreController when the object is destroyed.
 /// 
-/// - Raul Vera 2018
+/// - Raúl Vera Ortega 2018
 /// </summary>
 public class ScoreOnDestroy : MonoBehaviour {
 	public int score;

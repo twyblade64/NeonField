@@ -12,7 +12,7 @@
 /// then transforms it to the Camera bounds. If the camera limit is activated, the
 /// camera will not go out of the Camera bounds.
 /// 
-/// - Raul Vera 2018
+/// - Raúl Vera Ortega 2018
 /// </summary>
 public class CameraController : MonoBehaviour {
     /// <summary>

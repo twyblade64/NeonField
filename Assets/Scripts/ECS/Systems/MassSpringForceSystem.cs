@@ -17,7 +17,7 @@ using UnityEngine.Experimental.PlayerLoop;
 /// - MassSpringForceJob: Iterates over all the hashMap entries, calculates the resulting force 
 /// and applies it to their respective masses.
 /// 
-/// - Raul Vera 2018
+/// - Raúl Vera Ortega 2018
 /// </summary>
 
 [UpdateInGroup(typeof(PhysicUpdate))]

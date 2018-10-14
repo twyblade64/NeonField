@@ -14,7 +14,7 @@ using UnityEngine.Experimental.PlayerLoop;
 /// Since the ForceGenerator component is defined with no direction data, forces are
 /// assumed to be radially generated.
 /// 
-/// - Raul Vera 2018
+/// - Raúl Vera Ortega 2018
 /// </summary>
 
 [UpdateInGroup(typeof(PhysicUpdate))]

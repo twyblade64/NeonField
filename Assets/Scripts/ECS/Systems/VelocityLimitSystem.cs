@@ -12,7 +12,7 @@ using UnityEngine.Experimental.PlayerLoop;
 /// Needed to avoid some inestability issues with high elasticity 
 /// setups that suddenly explode.
 /// 
-/// - Raul Vera 2018
+/// - Raúl Vera Ortega 2018
 /// </summary>
 
 [UpdateInGroup(typeof(PhysicUpdate))]

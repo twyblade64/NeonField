@@ -7,7 +7,7 @@ using UnityEngine;
 /// 
 /// The spawning is made on the Y-aligned plane with center on the origin
 /// 
-/// - Raul Vera 2018
+/// - Raúl Vera Ortega 2018
 /// </summary>
 public class SpawnerController : MonoBehaviour {
 	/// <summary>

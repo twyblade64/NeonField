@@ -11,7 +11,7 @@ using UnityEngine;
 /// GameObjects must have a ForceExplosionController and a CopyForceFromExplosion components
 /// in order to be eligible to generate an explosion force.
 /// 
-/// - Raul Vera 2018
+/// - Raúl Vera Ortega 2018
 /// </summary>
 
 [UpdateInGroup(typeof(PhysicUpdate))]

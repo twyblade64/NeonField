@@ -4,7 +4,7 @@ using UnityEngine;
 /// <summary>
 /// Automatically destroy particle object after
 /// the end of its lifetime.
-/// - Raul Vera 2018
+/// - Raúl Vera Ortega 2018
 /// </summary>
 public class ExplosionParticleController : MonoBehaviour {
 	private ParticleSystem partSys;

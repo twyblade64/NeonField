@@ -11,7 +11,7 @@ using UnityEngine;
 /// Used to force all the grid movement in a 2D plane. Otherwise, nodes sometimes move in the Y-axis
 /// affecting the final grid behaviour.
 /// 
-/// - Raul Vera 2018
+/// - Raúl Vera Ortega 2018
 /// </summary>
 
 [UpdateInGroup(typeof(PhysicUpdate))]

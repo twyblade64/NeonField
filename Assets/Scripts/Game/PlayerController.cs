@@ -4,7 +4,7 @@ using UnityEngine;
 /// <summary>
 /// Class controlling the player's ship movement and fire logic.
 /// 
-/// - Raul Vera 2018
+/// - Raúl Vera Ortega 2018
 /// </summary>
 public class PlayerController : MonoBehaviour {
 	/// <summary>

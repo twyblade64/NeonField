@@ -11,7 +11,7 @@ using UnityEngine.Experimental.PlayerLoop;
 /// Slow-down the velocity of the entities.
 /// Used to decrease the kinetic energy of the of the grid.
 /// 
-/// - Raul Vera 2018
+/// - Raúl Vera Ortega 2018
 /// </summary>
 
 [UpdateInGroup(typeof(PhysicUpdate))]

@@ -5,7 +5,7 @@ using UnityEngine;
 /// Standard script for moving an object in a direction.
 /// It is destroyed automatically when reaching the specified destruction distance.
 /// 
-/// - Raul Vera 2018
+/// - Raúl Vera Ortega 2018
 /// </summary>
 public class BulletController : MonoBehaviour {
 	public float speed;

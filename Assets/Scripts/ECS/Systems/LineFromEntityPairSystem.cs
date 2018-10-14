@@ -10,7 +10,7 @@ using UnityEngine;
 /// This system defines an line location using two entities and their positions.
 /// It's used to build the spring between the grid nodes.
 /// 
-/// - Raul Vera 2018
+/// - Raúl Vera Ortega 2018
 /// </summary>
 
 [UpdateInGroup(typeof(PhysicUpdate))]

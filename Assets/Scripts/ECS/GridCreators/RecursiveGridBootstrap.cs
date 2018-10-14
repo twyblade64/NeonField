@@ -15,7 +15,7 @@ using UnityEngine.Rendering;
 /// will also be divided in 'sections'. Each section division has its own
 /// parameters for the node and spding entities.
 /// 
-/// - Raul Vera 2018
+/// - Raúl Vera Ortega 2018
 /// </summary>
 public sealed class RecursiveGridBootstrap : MonoBehaviour {
   /// <summary>

@@ -14,7 +14,7 @@ using UnityEngine.Rendering;
 /// <summary>
 /// This system renders all the lines meshes.
 /// 
-/// - Raul Vera 2018
+/// - Raúl Vera Ortega 2018
 /// </summary>
 
 [UpdateAfter(typeof(PreLateUpdate))]

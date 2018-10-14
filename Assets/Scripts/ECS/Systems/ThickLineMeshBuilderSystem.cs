@@ -15,7 +15,7 @@ using UnityEngine.Rendering;
 /// <summary>
 /// This system prepares each of the line meshes in the grid before rendering them.
 /// 
-/// - Raul Vera 2018
+/// - Raúl Vera Ortega 2018
 /// </summary>
 
 public class ThickLineMeshBuilderSystem : JobComponentSystem {

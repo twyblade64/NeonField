@@ -5,7 +5,7 @@ using System;
 /// <summary>
 /// Class managing the score in the game
 /// 
-/// - Raul Vera 2018
+/// - Raúl Vera Ortega 2018
 /// </summary>
 public class ScoreController : MonoBehaviour {
 	/// <summary>

@@ -4,7 +4,7 @@
 /// Class used to move objsects around the worldspace with the mouse.
 /// It was used to have an object with a ForceGenerator component and
 /// test the generated force in different locations.
-/// Raul Vera - 2018
+/// Raúl Vera Ortega - 2018
 /// </summary>
 public class MousePositionController : MonoBehaviour {
 	/// <summary>

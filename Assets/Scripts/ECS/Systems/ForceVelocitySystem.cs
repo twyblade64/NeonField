@@ -10,7 +10,7 @@ using UnityEngine.Experimental.PlayerLoop;
 /// <summary>
 /// System used to convert recieved forces into velocity.
 /// 
-/// - Raul Vera 2018
+/// - Raúl Vera Ortega 2018
 /// </summary>
 
 [UpdateInGroup(typeof(PhysicUpdate))]

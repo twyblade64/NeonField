@@ -11,7 +11,7 @@ using UnityEngine.Serialization;
 /// <summary>
 /// The bootstrap class for the grid ecs systems and components.
 /// 
-/// - Raul Vera 2018
+/// - Raúl Vera Ortega 2018
 /// </summary>
 public sealed class NormalGridBootstrap : MonoBehaviour {
   /// <summary>
