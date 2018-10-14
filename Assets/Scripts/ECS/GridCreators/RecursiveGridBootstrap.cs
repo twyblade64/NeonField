@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Entities;
@@ -8,11 +9,35 @@ using UnityEngine;
 using UnityEngine.Rendering;
 
 /// <summary>
-/// The bootstrap class for the ecs systems and components.
+/// The bootstrap class for the grid ecs systems and components.
+/// This bootstrap creates the grid using the modulus operator for each
+/// node and spring, so that the grid is divided in 'sections' which
+/// will also be divided in 'sections'. Each section division has its own
+/// parameters for the node and spding entities.
 /// 
 /// - Raul Vera 2018
 /// </summary>
-public sealed class Bootstrap : MonoBehaviour {
+public sealed class RecursiveGridBootstrap : MonoBehaviour {
+  /// <summary>
+  /// The settings used to create nodes and springs.
+  /// </summary>
+  [Serializable]
+  public struct NodeSettings {
+    public float elasticity;
+    public float damp;
+    public float width;
+    public float maxSpeed;
+  }
+
+  [Serializable]
+  public struct RecursionSetting {
+    /// The frecuency of the section division. Must be at least (1,1).
+    public Vector2Int frequency;
+
+    /// The settings for this section division.
+    public NodeSettings nodeSettings;
+  }
+
   /// <summary>
   /// The space that the nodes will cover.
   /// </summary>
@@ -31,33 +56,24 @@ public sealed class Bootstrap : MonoBehaviour {
   /// <summary>
   /// The material used to render each line conection nodes.
   /// </summary>
-  public Material nodeMaterial;
+  public Material lineMaterial;
 
   /// <summary>
-  /// The force a node exerts over others when beign pulled.
+  /// The divisions to be created in the grid.
+  /// Diisions are applied from first to last.
   /// </summary>
-  public float nodeElasticity;
+  public List<RecursionSetting> recursions;
 
   /// <summary>
-  /// Removal of overall energy in the system.
+  /// Minimum/Default division settings.
   /// </summary>
-  public float nodeDamp;
-
-  /// <summary>
-  /// Width of the line rendered between nodes.
-  /// </summary>
-  public float nodeWidth;
-
-  /// <summary>
-  /// Limit the speed of the moving nodes.
-  /// </summary>
-  public float nodeMaxSpeed;
+  public NodeSettings defaultSetting;
 
   /// <summary>
   /// Archetype of the grid nodes.
   /// </summary>
   public static EntityArchetype NodeArchetype;
-  
+
   /// <summary>
   /// Archetype of the grid springs.
   /// </summary>
@@ -85,6 +101,9 @@ public sealed class Bootstrap : MonoBehaviour {
   }
 
   public void Start() {
+    // Lets add the deafult setting at the end of the list
+    recursions.Add(new RecursionSetting { frequency = new Vector2Int(1, 1), nodeSettings = defaultSetting });
+
     EntityManager entityManager = World.Active.GetOrCreateManager<EntityManager>();
 
     // Create node entities.
@@ -101,9 +120,9 @@ public sealed class Bootstrap : MonoBehaviour {
     // For each spring well have 4 vertices and normals
     LineRenderer lineRenderer = new LineRenderer() {
       WorkMesh = new Mesh(),
-      Material = nodeMaterial,
-      Vertices = new Vector3[(2 * xNodes * yNodes - xNodes - yNodes)*4],
-      Normals = new Vector3[(2 * xNodes * yNodes - xNodes - yNodes)*4]
+      Material = lineMaterial,
+      Vertices = new Vector3[(2 * xNodes * yNodes - xNodes - yNodes) * 4],
+      Normals = new Vector3[(2 * xNodes * yNodes - xNodes - yNodes) * 4]
     };
 
     //-- Initializing each node and spring data
@@ -118,9 +137,16 @@ public sealed class Bootstrap : MonoBehaviour {
     // Set each node and spring data
     for (int i = 0; i < nodeEntities.Length; ++i) {
       //---- Nodes
+      // Node grid position
+      int nX = i % xNodes;
+      int nY = i / xNodes;
+
       // Get the position in WorldSpace of the node
-      float pX = 1f * (i % xNodes) / (xNodes - 1) * nodeField.width + nodeField.x;
-      float pY = 1f * (i / xNodes) / (yNodes - 1) * nodeField.height + nodeField.y;
+      float pX = 1f * nX / (xNodes - 1) * nodeField.width + nodeField.x;
+      float pY = 1f * nY / (yNodes - 1) * nodeField.height + nodeField.y;
+
+      // Node configuration
+      NodeSettings settings = recursions[GetRecursionLevel(nX, nY)].nodeSettings;
 
       // Node Position
       entityManager.SetComponentData(nodeEntities[i], new Position { Value = new float3(pX, 0, pY) });
@@ -129,13 +155,13 @@ public sealed class Bootstrap : MonoBehaviour {
       entityManager.SetComponentData(nodeEntities[i], new Velocity { Value = new float3(0, 0, 0) });
 
       // Node Max Speed
-      entityManager.SetComponentData(nodeEntities[i], new MaxSpeed { Value = nodeMaxSpeed });
+      entityManager.SetComponentData(nodeEntities[i], new MaxSpeed { Value = settings.maxSpeed });
 
       // Node Damper
-      entityManager.SetComponentData(nodeEntities[i], new Damper { Value = nodeDamp });
+      entityManager.SetComponentData(nodeEntities[i], new Damper { Value = settings.damp });
 
       // Disable node movement in Y axis
-      entityManager.SetComponentData(nodeEntities[i], new FreezeAxis { FreezeMask = FreezeAxis.AxisMask.Y, FreezePos = new float3(0,0,0) });
+      entityManager.SetComponentData(nodeEntities[i], new FreezeAxis { FreezeMask = FreezeAxis.AxisMask.Y, FreezePos = new float3(0, 0, 0) });
 
       // Inmovable border nodes
       if (i % xNodes == 0 || i / xNodes == 0 || i % xNodes == xNodes - 1 || i / xNodes == yNodes - 1)
@@ -145,18 +171,20 @@ public sealed class Bootstrap : MonoBehaviour {
 
       //---- Springs
       // Horizontal springs. No horizontal spring on final column.
-      if (i % xNodes != xNodes - 1) { 
+      if (i % xNodes != xNodes - 1) {
+        NodeSettings lineSettings = recursions[Math.Max(GetRecursionLevel(nX, nY), GetRecursionLevel(nX + 1, nY))].nodeSettings;
+
         // Spring component. Spring position will be updated in system, so no need to do it here. Use base horizontal spring length.
-        entityManager.SetComponentData(springEntities[springIndex], new Line { P1 = new float3(0, 0, 0), P2 = new float3(0, 0, 0)});
+        entityManager.SetComponentData(springEntities[springIndex], new Line { P1 = new float3(0, 0, 0), P2 = new float3(0, 0, 0) });
 
         // Setup node references
         entityManager.SetComponentData(springEntities[springIndex], new EntityPair { E1 = nodeEntities[i], E2 = nodeEntities[i + 1] });
 
         // Spring elasticity
-        entityManager.SetComponentData(springEntities[springIndex], new Elasticity { YoungModulus = nodeElasticity, ReferenceLength = hSpringLength });
+        entityManager.SetComponentData(springEntities[springIndex], new Elasticity { YoungModulus = lineSettings.elasticity, ReferenceLength = hSpringLength });
 
         // Springthickness
-        entityManager.SetComponentData(springEntities[springIndex], new Thickness() { Value = nodeWidth});
+        entityManager.SetComponentData(springEntities[springIndex], new Thickness() { Value = lineSettings.width });
 
         // Spring lineRenderer
         entityManager.SetSharedComponentData(springEntities[springIndex], lineRenderer);
@@ -166,22 +194,24 @@ public sealed class Bootstrap : MonoBehaviour {
       }
 
       // Vertical springs. No vertical spring on final row.
-      if (i / xNodes != yNodes - 1) { 
+      if (i / xNodes != yNodes - 1) {
+        NodeSettings lineSettings = recursions[Math.Max(GetRecursionLevel(nX, nY), GetRecursionLevel(nX, nY+1))].nodeSettings;
+
         // Spring component. Spring position will be updated in system, so no need to do it here. Use base vertical spring length.
-        entityManager.SetComponentData(springEntities[springIndex], new Line { P1 = new float3(0, 0, 0), P2 = new float3(0, 0, 0)});
-        
+        entityManager.SetComponentData(springEntities[springIndex], new Line { P1 = new float3(0, 0, 0), P2 = new float3(0, 0, 0) });
+
         // Setup node references
         entityManager.SetComponentData(springEntities[springIndex], new EntityPair { E1 = nodeEntities[i], E2 = nodeEntities[i + xNodes] });
-        
+
         // Spring elasticity
-        entityManager.SetComponentData(springEntities[springIndex], new Elasticity { YoungModulus = nodeElasticity, ReferenceLength = vSpringLength });
+        entityManager.SetComponentData(springEntities[springIndex], new Elasticity { YoungModulus = lineSettings.elasticity, ReferenceLength = vSpringLength });
 
         // Springthickness
-        entityManager.SetComponentData(springEntities[springIndex], new Thickness() { Value = nodeWidth});
-        
+        entityManager.SetComponentData(springEntities[springIndex], new Thickness() { Value = lineSettings.width });
+
         // Spring lineRenderer
         entityManager.SetSharedComponentData(springEntities[springIndex], lineRenderer);
-        
+
         // Increase spring counter
         ++springIndex;
       }
@@ -223,4 +253,13 @@ public sealed class Bootstrap : MonoBehaviour {
     nodeEntities.Dispose();
   }
 
+  int GetRecursionLevel(int x, int y) {
+    for (int i = 0; i < recursions.Count; ++i) {
+      x %= recursions[i].frequency.x;
+      y %= recursions[i].frequency.y;
+      if (x == 0 || y == 0)
+        return i;
+    }
+    return -1;
+  }
 }

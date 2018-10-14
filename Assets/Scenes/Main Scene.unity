@@ -259,7 +259,7 @@ Transform:
   m_Children:
   - {fileID: 1787144566}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &194734809
 GameObject:
@@ -339,6 +339,79 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
+--- !u!1 &494961349
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 494961351}
+  - component: {fileID: 494961350}
+  m_Layer: 0
+  m_Name: Recursive Grid Bootstrap
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!114 &494961350
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 494961349}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12f149823da17f94a9f5e8fe2f2897b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nodeField:
+    serializedVersion: 2
+    x: -18
+    y: -12
+    width: 36
+    height: 24
+  xNodes: 129
+  yNodes: 97
+  lineMaterial: {fileID: 2100000, guid: d0991afe3aa9c0b45b75c9d89de6f22d, type: 2}
+  recursions:
+  - frequency: {x: 32, y: 24}
+    nodeSettings:
+      elasticity: 100
+      damp: 0.9
+      width: 0.1
+      maxSpeed: 500
+  - frequency: {x: 8, y: 6}
+    nodeSettings:
+      elasticity: 250
+      damp: 0.9
+      width: 0.05
+      maxSpeed: 500
+  - frequency: {x: 4, y: 3}
+    nodeSettings:
+      elasticity: 500
+      damp: 0.9
+      width: 0.025
+      maxSpeed: 500
+  defaultSetting:
+    elasticity: 1000
+    damp: 0.9
+    width: 0.0125
+    maxSpeed: 500
+--- !u!4 &494961351
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 494961349}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &584912989
 GameObject:
   m_ObjectHideFlags: 0
@@ -349,7 +422,7 @@ GameObject:
   - component: {fileID: 584912990}
   - component: {fileID: 584912991}
   m_Layer: 0
-  m_Name: Bootstrap Object
+  m_Name: Normal Grid Bootstrap
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -376,7 +449,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 584912989}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3cd4dc340eda2a14dbcf30b812653cc9, type: 3}
+  m_Script: {fileID: 11500000, guid: a130640e2310331409d11425754386f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   nodeField:
@@ -387,10 +460,11 @@ MonoBehaviour:
     height: 24
   xNodes: 180
   yNodes: 120
-  nodeMaterial: {fileID: 2100000, guid: d0991afe3aa9c0b45b75c9d89de6f22d, type: 2}
   nodeElasticity: 500
   nodeDamp: 0.8
   nodeWidth: 0.075
+  nodeMaxSpeed: 500
+  lineMaterial: {fileID: 2100000, guid: d0991afe3aa9c0b45b75c9d89de6f22d, type: 2}
 --- !u!1 &598300061
 GameObject:
   m_ObjectHideFlags: 0
@@ -810,7 +884,7 @@ Transform:
   m_LocalScale: {x: 0.2, y: 0.2, z: 0.2}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &767377428
 MonoBehaviour:
@@ -890,7 +964,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4115125244064270, guid: b0898da54b65f0b439c183722ef5f096, type: 2}
       propertyPath: m_RootOrder
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b0898da54b65f0b439c183722ef5f096, type: 2}
@@ -943,7 +1017,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1383165259
 GameObject:
