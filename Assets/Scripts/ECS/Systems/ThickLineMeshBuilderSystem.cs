@@ -45,12 +45,15 @@ public class ThickLineMeshBuilderSystem : JobComponentSystem {
     }
 
     public void Execute(int i) {
+      Line line = _lines[i];
+      float3 dist = line.P2 - line.P1;
+      float3 perp = new float3(-dist.z, dist.y, dist.x);
+      perp = math.normalize(perp) * 0.5f * _thicknesses[i].Value;
 
-      float3 perp = math.normalize(math.cross((_lines[i].P2 - _lines[i].P1), new float3(0, 1, 0))) * 0.5f * _thicknesses[i].Value;
-      float3 p0 = _lines[i].P1 - perp;
-      float3 p1 = _lines[i].P1 + perp;
-      float3 p2 = _lines[i].P2 - perp;
-      float3 p3 = _lines[i].P2 + perp;
+      float3 p0 = line.P1 - perp;
+      float3 p1 = line.P1 + perp;
+      float3 p2 = line.P2 - perp;
+      float3 p3 = line.P2 + perp;
 
       int vertIndex = _counter.Increment() * 4;
 

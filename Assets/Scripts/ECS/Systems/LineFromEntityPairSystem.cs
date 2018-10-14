@@ -31,9 +31,11 @@ public class LineFromEntityPairSystem : JobComponentSystem {
     [ReadOnly] public ComponentDataFromEntity<Position> _positions;
 
     public void Execute(int i) {
+      EntityPair pair = _entityPairs[i];
+
       _lines[i] = new Line {
-        P1 = _positions[_entityPairs[i].E1].Value,
-        P2 = _positions[_entityPairs[i].E2].Value
+        P1 = _positions[pair.E1].Value,
+        P2 = _positions[pair.E2].Value
       };
     }
   }

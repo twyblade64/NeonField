@@ -46,18 +46,29 @@ public class ForceInfluenceSystem : JobComponentSystem {
     [ReadOnly] public int generatorCount;
 
     public void Execute(int i) {
+      Position position = recieverPositions[i];
+      Physical physical = recieverPhysicals[i];
+
+      float3 forceSum = new float3(0, 0, 0);
+
       for (int j = 0; j < generatorCount; ++j) {
-        float3 distance = recieverPositions[i].Value - generatorPositions[j].Value;
+        Position generatorPosition = generatorPositions[j];
+        ForceGenerator forceGenerator = generatorForces[j];
+
+        float3 distance = position.Value - generatorPosition.Value;
         float distanceMagSqr = math.lengthsq(distance);
-        if (distanceMagSqr < generatorForces[j].distance * generatorForces[j].distance) {
-          // Linear decay over distance
-          float f = 1 - math.sqrt(distanceMagSqr) / generatorForces[j].distance;
-          recieverPhysicals[i] = new Physical {
-            Force = recieverPhysicals[i].Force + math.normalize(distance) * f * f * generatorForces[j].force,
-            InverseMass = recieverPhysicals[i].InverseMass
-          };
+        if (distanceMagSqr < forceGenerator.distance * forceGenerator.distance) {
+
+          // Square decay over distance
+          float f = 1 - math.sqrt(distanceMagSqr) / forceGenerator.distance;
+          forceSum += math.normalize(distance) * f * f * forceGenerator.force;
         }
       }
+
+      recieverPhysicals[i] = new Physical {
+        Force = physical.Force + forceSum,
+        InverseMass = physical.InverseMass
+      };
     }
   }
 

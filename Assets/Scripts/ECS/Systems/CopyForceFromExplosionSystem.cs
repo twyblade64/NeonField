@@ -27,9 +27,11 @@ public class CopyForceFromExplosionSystem : ComponentSystem {
 
   protected override void OnUpdate() {
     for (int i = 0; i < m_Data.Length; ++i) {
+      ForceExplosionController forceExplosionController = m_Data.forceExplosion[i];
+
       m_Data.forceGenerator[i] = new ForceGenerator {
-        force = m_Data.forceExplosion[i].force,
-        distance = m_Data.forceExplosion[i].distance
+        force = forceExplosionController.force,
+        distance = forceExplosionController.distance
       };
     }
   }

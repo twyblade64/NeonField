@@ -40,52 +40,56 @@ public class MassSpringForceSystem : JobComponentSystem {
   [Inject] private SpringData _springData;
 
   /// <summary>
-  /// Creation of the hashMap
+  /// Creation of a MultiHashMap containing all the forces to be applied
+  /// to each entity.
   /// </summary>
   [BurstCompile]
-  struct HashMassSpringJob : IJobParallelFor {
-    public NativeMultiHashMap<Entity, int>.Concurrent _hashMap;
+  struct HashSpringForceJob : IJobParallelFor {
+    public NativeMultiHashMap<Entity, float3>.Concurrent _hashMap;
     [ReadOnly] public ComponentDataArray<EntityPair> _springEntityPairs;
+    [ReadOnly] public ComponentDataArray<Elasticity> _springElasticities;
+    [ReadOnly] public ComponentDataArray<Line> _springLines;
 
     public void Execute(int index) {
-      _hashMap.Add(_springEntityPairs[index].E1, index);
-      _hashMap.Add(_springEntityPairs[index].E2, index);
+      EntityPair entityPair = _springEntityPairs[index];
+      Line line = _springLines[index];
+      Elasticity elasticity = _springElasticities[index];
+
+      float3 dist = (line.P2 - line.P1);
+      float distMag = math.length(dist);
+      float refDist = elasticity.ReferenceLength;
+
+      if (distMag > refDist) {
+        float3 force = dist * (1 - refDist / distMag) * elasticity.YoungModulus;
+        _hashMap.Add(entityPair.E1, force);
+        _hashMap.Add(entityPair.E2, -force);
+      }
     }
   }
 
   [BurstCompile]
   struct MassSpringForceJob : IJobParallelFor {
-    [ReadOnly] public NativeMultiHashMap<Entity, int> _massSpringHashMap;
-    [ReadOnly] public ComponentDataArray<EntityPair> _springEntityPairs;
-    [ReadOnly] public ComponentDataArray<Elasticity> _springElasticities;
-    [ReadOnly] public ComponentDataArray<Line> _springLines;
+    [ReadOnly] public NativeMultiHashMap<Entity, float3> _massSpringHashMap;
     [ReadOnly] public EntityArray _massEntities;
     public ComponentDataArray<Physical> _massPhysicals;
 
-    void ApplySpringForce(int massIndex, int springIndex) {
-      Entity massEntity = _massEntities[massIndex];
-      float3 force = new float3(0, 0, 0);
-      float3 dir = (_springLines[springIndex].P2 - _springLines[springIndex].P1);
-      float dist = math.length(dir);
-      float refDist = _springElasticities[springIndex].ReferenceLength;
-      if (dist > refDist)
-        force = dir / dist * math.min(dist - refDist, 1) * _springElasticities[springIndex].YoungModulus;
-      if (massEntity == _springEntityPairs[springIndex].E2)
-        force = -force;
-
-      _massPhysicals[massIndex] = new Physical {
-        Force = _massPhysicals[massIndex].Force + force,
-        InverseMass = _massPhysicals[massIndex].InverseMass
-      };
-    }
-
     public void Execute(int massIndex) {
-      int springIndex;
+      Entity entity = _massEntities[massIndex];
+      Physical physical = _massPhysicals[massIndex];
+
+      float3 forceSum = new float3(0, 0, 0);
+      float3 force;
+
       NativeMultiHashMapIterator<Entity> it;
-      if (_massSpringHashMap.TryGetFirstValue(_massEntities[massIndex], out springIndex, out it)) {
-        ApplySpringForce(massIndex, springIndex);
-        while (_massSpringHashMap.TryGetNextValue(out springIndex, ref it))
-          ApplySpringForce(massIndex, springIndex);
+      if (_massSpringHashMap.TryGetFirstValue(entity, out force, out it)) {
+        forceSum += force;
+        while (_massSpringHashMap.TryGetNextValue(out force, ref it))
+          forceSum += force;
+
+        _massPhysicals[massIndex] = new Physical {
+          Force = physical.Force + forceSum,
+          InverseMass = physical.InverseMass
+        };
       }
     }
   }
@@ -94,20 +98,19 @@ public class MassSpringForceSystem : JobComponentSystem {
     if (_massData.Length == 0 || _springData.Length == 0)
       return inputDeps;
 
-    NativeMultiHashMap<Entity, int> hashMap = new NativeMultiHashMap<Entity, int>(_massData.Length * 4, Allocator.Temp);
+    NativeMultiHashMap<Entity, float3> hashMap = new NativeMultiHashMap<Entity, float3>(_massData.Length * 4, Allocator.Temp);
 
-    HashMassSpringJob hashMassSpringJob = new HashMassSpringJob {
+    HashSpringForceJob hashMassSpringJob = new HashSpringForceJob {
       _hashMap = hashMap.ToConcurrent(),
-      _springEntityPairs = _springData.EntityPairs
+      _springEntityPairs = _springData.EntityPairs,
+      _springElasticities = _springData.Elasticities,
+      _springLines = _springData.Lines
     };
 
     JobHandle hashMassSPringHandle = hashMassSpringJob.Schedule(_springData.Length, 64, inputDeps);
 
     MassSpringForceJob massSpringForceJob = new MassSpringForceJob {
       _massSpringHashMap = hashMap,
-      _springEntityPairs = _springData.EntityPairs,
-      _springElasticities = _springData.Elasticities,
-      _springLines = _springData.Lines,
       _massEntities = _massData.Entities,
       _massPhysicals = _massData.Physicals
     };
