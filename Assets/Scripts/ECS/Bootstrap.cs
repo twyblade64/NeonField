@@ -49,6 +49,11 @@ public sealed class Bootstrap : MonoBehaviour {
   public float nodeWidth;
 
   /// <summary>
+  /// Limit the speed of the moving nodes.
+  /// </summary>
+  public float nodeMaxSpeed;
+
+  /// <summary>
   /// Archetype of the grid nodes.
   /// </summary>
   public static EntityArchetype NodeArchetype;
@@ -67,7 +72,7 @@ public sealed class Bootstrap : MonoBehaviour {
 
     // The node archetype contains the information of a node in space.
     NodeArchetype = entityManager.CreateArchetype(
-      typeof(Position), typeof(Velocity),
+      typeof(Position), typeof(Velocity), typeof(MaxSpeed),
       typeof(Physical), typeof(Damper), typeof(FreezeAxis)
     );
 
@@ -122,6 +127,9 @@ public sealed class Bootstrap : MonoBehaviour {
 
       // Node Velocity
       entityManager.SetComponentData(nodeEntities[i], new Velocity { Value = new float3(0, 0, 0) });
+
+      // Node Max Speed
+      entityManager.SetComponentData(nodeEntities[i], new MaxSpeed { Value = nodeMaxSpeed });
 
       // Node Damper
       entityManager.SetComponentData(nodeEntities[i], new Damper { Value = nodeDamp });

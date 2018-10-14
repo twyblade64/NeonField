@@ -59,7 +59,7 @@ public class EnemyController : MonoBehaviour {
 	/// </summary>
 	void FixedUpdate() {
 		Vector3 dir = (player.transform.position - transform.position).normalized;
-		vel += dir * accel * Time.deltaTime;
+		vel += dir * accel * Time.fixedDeltaTime;
 		vel = Vector3.ClampMagnitude(vel, maxSpeed);
 		rb.velocity = vel;
 	}

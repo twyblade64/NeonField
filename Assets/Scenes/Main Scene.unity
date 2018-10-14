@@ -388,7 +388,7 @@ MonoBehaviour:
   xNodes: 180
   yNodes: 120
   nodeMaterial: {fileID: 2100000, guid: d0991afe3aa9c0b45b75c9d89de6f22d, type: 2}
-  nodeElasticity: 200
+  nodeElasticity: 500
   nodeDamp: 0.8
   nodeWidth: 0.075
 --- !u!1 &598300061

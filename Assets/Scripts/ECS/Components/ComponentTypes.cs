@@ -35,6 +35,15 @@ public struct Velocity : IComponentData {
 }
 
 /// <summary>
+/// Component representing an entity with an speed limit.
+/// </summary>
+[Serializable]
+public struct MaxSpeed : IComponentData {
+	/// Maximum speed
+	public float Value;
+}
+
+/// <summary>
 /// Component representing an entity which energy decreases.
 /// </summary>
 [Serializable]

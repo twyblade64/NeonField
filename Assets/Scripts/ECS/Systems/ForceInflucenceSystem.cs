@@ -59,9 +59,9 @@ public class ForceInfluenceSystem : JobComponentSystem {
         float distanceMagSqr = math.lengthsq(distance);
         if (distanceMagSqr < forceGenerator.distance * forceGenerator.distance) {
 
-          // Square decay over distance
+          // Linear decay over distance
           float f = 1 - math.sqrt(distanceMagSqr) / forceGenerator.distance;
-          forceSum += math.normalize(distance) * f * f * forceGenerator.force;
+          forceSum += math.normalize(distance) * f * forceGenerator.force;
         }
       }
 

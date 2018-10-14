@@ -138,7 +138,7 @@ public class PlayerController : MonoBehaviour {
 		vel *= damp;
 
 		// Apply acceleration to velocity.
-		vel += smoothInput * accel * Time.deltaTime;
+		vel += smoothInput * accel * Time.fixedDeltaTime;
 
 		// Limit velocity to maxSpeed vector.
 		vel = Vector2.ClampMagnitude(vel, maxSpeed);

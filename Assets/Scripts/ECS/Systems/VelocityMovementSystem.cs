@@ -14,7 +14,7 @@ using UnityEngine.Experimental.PlayerLoop;
 /// </summary>
 
 [UpdateInGroup(typeof(PhysicUpdate))]
-[UpdateAfter(typeof(VelocityDampSystem))]
+[UpdateAfter(typeof(VelocityLimitSystem))]
 public class VelocityMovementSystem : JobComponentSystem {
   [BurstCompile]
   struct MoveJob : IJobProcessComponentData<Position, Velocity> {
