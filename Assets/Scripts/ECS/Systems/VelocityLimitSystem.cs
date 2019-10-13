@@ -5,7 +5,6 @@ using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
-using UnityEngine.Experimental.PlayerLoop;
 
 /// <summary>
 /// Limit the maximum speed of the entities.
@@ -15,12 +14,12 @@ using UnityEngine.Experimental.PlayerLoop;
 /// - Raúl Vera Ortega 2018
 /// </summary>
 
-[UpdateInGroup(typeof(PhysicUpdate))]
+[UpdateInGroup(typeof(SimulationSystemGroup))]
 [UpdateAfter(typeof(VelocityDampSystem))]
 public class VelocityLimitSystem : JobComponentSystem {
   
   [BurstCompile]
-  struct VelocityLimitJob : IJobProcessComponentData<Velocity, MaxSpeed> {
+  struct VelocityLimitJob : IJobForEach<Velocity, MaxSpeed> {
     public void Execute(ref Velocity vel, [ReadOnly] ref MaxSpeed maxSpeed) {
       float3 v = vel.Value;
       float mag = math.lengthsq(v);

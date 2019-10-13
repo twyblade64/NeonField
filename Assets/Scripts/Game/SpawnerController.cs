@@ -36,6 +36,7 @@ public class SpawnerController : MonoBehaviour {
 
 	IEnumerator Spawn() {
 		while (true) {
+			yield return new WaitForEndOfFrame();
 			for (int i = 0; i < spawnAmmount; ++i) {
 				// Random position within spawn area.
 				Vector3 pos = new Vector3(spawnArea.x + Random.value * spawnArea.width, 0, spawnArea.x + Random.value * spawnArea.height);

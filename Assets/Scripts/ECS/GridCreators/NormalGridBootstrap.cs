@@ -64,16 +64,19 @@ public sealed class NormalGridBootstrap : MonoBehaviour {
   /// </summary>
   public static EntityArchetype SpringArchetype;
 
+  // TODO Document
+  public static EntityArchetype GridRendererArchetype;
+
   /// <summary>
   /// Initialize archetypes
   /// </summary>
   [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
   public static void Initialize() {
-    var entityManager = World.Active.GetOrCreateManager<EntityManager>();
+    var entityManager = World.Active.EntityManager;
 
     // The node archetype contains the information of a node in space.
     NodeArchetype = entityManager.CreateArchetype(
-      typeof(Position), typeof(Velocity), typeof(MaxSpeed),
+      typeof(Translation), typeof(Velocity), typeof(MaxSpeed),
       typeof(Physical), typeof(Damper), typeof(FreezeAxis)
     );
 
@@ -81,12 +84,17 @@ public sealed class NormalGridBootstrap : MonoBehaviour {
     // Also used to render the line between them
     SpringArchetype = entityManager.CreateArchetype(
       typeof(Line), typeof(EntityPair),
-      typeof(Elasticity), typeof(Thickness), typeof(LineRenderer)
+      typeof(Elasticity), typeof(Thickness), typeof(LineRendererRef)
+    );
+
+    // TODO Document
+    GridRendererArchetype = entityManager.CreateArchetype (
+      typeof(RenderMesh), typeof(BufferableVertex), typeof(CustomRenderTag)
     );
   }
 
   public void Start() {
-    EntityManager entityManager = World.Active.GetOrCreateManager<EntityManager>();
+    EntityManager entityManager = World.Active.EntityManager;
 
     // Create node entities.
     NativeArray<Entity> nodeEntities = new NativeArray<Entity>(xNodes * yNodes, Allocator.Temp);
@@ -98,14 +106,61 @@ public sealed class NormalGridBootstrap : MonoBehaviour {
     NativeArray<Entity> springEntities = new NativeArray<Entity>(2 * xNodes * yNodes - xNodes - yNodes, Allocator.Temp);
     entityManager.CreateEntity(SpringArchetype, springEntities);
 
-    // Setup a shared lineRenderer component, containing the mesh information of all the grid.
-    // For each spring well have 4 vertices and normals
-    LineRenderer lineRenderer = new LineRenderer() {
-      WorkMesh = new Mesh(),
-      Material = lineMaterial,
-      Vertices = new Vector3[(2 * xNodes * yNodes - xNodes - yNodes)*4],
-      Normals = new Vector3[(2 * xNodes * yNodes - xNodes - yNodes)*4]
+    // TODO Document
+    var gridEntity = entityManager.CreateEntity(GridRendererArchetype);
+
+    var vertexBuffer = entityManager.GetBuffer<BufferableVertex>(gridEntity);
+    vertexBuffer.ResizeUninitialized((2 * xNodes * yNodes - xNodes - yNodes)*4);
+    var renderMesh = new RenderMesh {
+      receiveShadows = false,
+      castShadows = ShadowCastingMode.Off,
+      layer = 0,
+      material = lineMaterial,
+      mesh = new Mesh(),
+      subMesh = 0
     };
+
+    // Quad: 
+    // 3 ════ 2
+    // ║ \\   ║
+    // ║   \\ ║
+    // 1 ════ 0
+    int[] lineTris = new int[(2 * xNodes * yNodes - xNodes - yNodes) * 2 * 3];
+    int lineIndex = 0;
+    for (int i = 0; i < lineTris.Length; i += 6) {
+      lineTris[i + 0] = lineIndex * 4 + 0;
+      lineTris[i + 1] = lineIndex * 4 + 1;
+      lineTris[i + 2] = lineIndex * 4 + 3;
+
+      lineTris[i + 3] = lineIndex * 4 + 0;
+      lineTris[i + 4] = lineIndex * 4 + 3;
+      lineTris[i + 5] = lineIndex * 4 + 2;
+      ++lineIndex;
+    }
+
+    Vector2[] lineUV = new Vector2[(2 * xNodes * yNodes - xNodes - yNodes) * 4];
+    for (int i = 0; i < lineUV.Length; i += 4) {
+      lineUV[i + 0] = new Vector2(0f, 0f);
+      lineUV[i + 1] = new Vector2(1f, 0f);
+      lineUV[i + 2] = new Vector2(0f, 1f);
+      lineUV[i + 3] = new Vector2(1f, 1f);
+    }
+
+    renderMesh.mesh.Clear();
+    renderMesh.mesh.indexFormat = IndexFormat.UInt32;
+    renderMesh.mesh.MarkDynamic();
+    // var initVertices = new Vector3[vertexBuffer.Length];
+    // for (int i = 0; i < initVertices.Length; ++i) initVertices[i] = UnityEngine.Random.insideUnitSphere;
+    // renderMesh.mesh.vertices = initVertices;
+    renderMesh.mesh.vertices = new Vector3[vertexBuffer.Length];
+    renderMesh.mesh.normals = new Vector3[vertexBuffer.Length];
+    renderMesh.mesh.uv = lineUV;
+    renderMesh.mesh.triangles = lineTris;
+    renderMesh.mesh.bounds = new Bounds(Vector3.zero, new Vector3(nodeField.x * 1.5f, 10, nodeField.y * 1.5f));
+    // renderMesh.mesh.bounds = new Bounds(Vector3.zero, Vector3.zero);
+    // renderMesh.mesh.RecalculateBounds();
+
+    entityManager.SetSharedComponentData(gridEntity, renderMesh);
 
     //-- Initializing each node and spring data
     // Since we sometimes setup 2 springs and sometimes 1, it's a bit hard to keep track
@@ -124,7 +179,7 @@ public sealed class NormalGridBootstrap : MonoBehaviour {
       float pY = 1f * (i / xNodes) / (yNodes - 1) * nodeField.height + nodeField.y;
 
       // Node Position
-      entityManager.SetComponentData(nodeEntities[i], new Position { Value = new float3(pX, 0, pY) });
+      entityManager.SetComponentData(nodeEntities[i], new Translation { Value = new float3(pX, 0, pY) });
 
       // Node Velocity
       entityManager.SetComponentData(nodeEntities[i], new Velocity { Value = new float3(0, 0, 0) });
@@ -157,10 +212,10 @@ public sealed class NormalGridBootstrap : MonoBehaviour {
         entityManager.SetComponentData(springEntities[springIndex], new Elasticity { YoungModulus = nodeElasticity, ReferenceLength = hSpringLength });
 
         // Springthickness
-        entityManager.SetComponentData(springEntities[springIndex], new Thickness() { Value = nodeWidth});
+        entityManager.SetComponentData(springEntities[springIndex], new Thickness { Value = nodeWidth});
 
-        // Spring lineRenderer
-        entityManager.SetSharedComponentData(springEntities[springIndex], lineRenderer);
+        // Spring lineRenderer reference
+        entityManager.SetSharedComponentData(springEntities[springIndex], new LineRendererRef { Value = gridEntity } );
 
         // Increase spring counter
         ++springIndex;
@@ -178,46 +233,15 @@ public sealed class NormalGridBootstrap : MonoBehaviour {
         entityManager.SetComponentData(springEntities[springIndex], new Elasticity { YoungModulus = nodeElasticity, ReferenceLength = vSpringLength });
 
         // Springthickness
-        entityManager.SetComponentData(springEntities[springIndex], new Thickness() { Value = nodeWidth});
+        entityManager.SetComponentData(springEntities[springIndex], new Thickness { Value = nodeWidth});
         
-        // Spring lineRenderer
-        entityManager.SetSharedComponentData(springEntities[springIndex], lineRenderer);
+        // Spring lineRenderer reference
+        entityManager.SetSharedComponentData(springEntities[springIndex], new LineRendererRef { Value = gridEntity } );
         
         // Increase spring counter
         ++springIndex;
       }
     }
-
-    // Startup shared LineRenderer WorkMesh
-    lineRenderer = entityManager.GetSharedComponentData<LineRenderer>(springEntities[0]);
-    int[] lineTris = new int[(2 * xNodes * yNodes - xNodes - yNodes) * 2 * 3];
-    int lineIndex = 0;
-    for (int i = 0; i < lineTris.Length; i += 6) {
-      lineTris[i + 0] = lineIndex * 4 + 0;
-      lineTris[i + 1] = lineIndex * 4 + 1;
-      lineTris[i + 2] = lineIndex * 4 + 3;
-
-      lineTris[i + 3] = lineIndex * 4 + 0;
-      lineTris[i + 4] = lineIndex * 4 + 3;
-      lineTris[i + 5] = lineIndex * 4 + 2;
-      ++lineIndex;
-    }
-
-    Vector2[] lineUV = new Vector2[(2 * xNodes * yNodes - xNodes - yNodes) * 4];
-    for (int i = 0; i < lineUV.Length; i += 4) {
-      lineUV[i + 0] = new Vector2(0f, 0f);
-      lineUV[i + 1] = new Vector2(1f, 0f);
-      lineUV[i + 2] = new Vector2(0f, 1f);
-      lineUV[i + 3] = new Vector2(1f, 1f);
-    }
-
-    lineRenderer.WorkMesh.indexFormat = IndexFormat.UInt32;
-    lineRenderer.WorkMesh.vertices = lineRenderer.Vertices;
-    lineRenderer.WorkMesh.normals = lineRenderer.Normals;
-    lineRenderer.WorkMesh.uv = lineUV;
-    lineRenderer.WorkMesh.triangles = lineTris;
-    lineRenderer.WorkMesh.MarkDynamic();
-    lineRenderer.WorkMesh.bounds = new Bounds(Vector3.zero, new Vector3(nodeField.x * 1.5f, 10, nodeField.y * 1.5f));
 
     // Dispose of temporal arrays
     springEntities.Dispose();

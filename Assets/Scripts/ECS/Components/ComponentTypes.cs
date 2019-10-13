@@ -52,19 +52,20 @@ public struct Damper : IComponentData {
 	public float Value;
 }
 
-/// <summary>
-/// Component representing an entity that is rendered as a line.
-/// </summary>
+[SerializeField]
+public struct CustomRenderTag : IComponentData{}
+
 [Serializable]
-public struct LineRenderer : ISharedComponentData {
-	/// The mesh used to write the vertices and normals of the line
-	public Mesh WorkMesh;
-	/// The material used to render the line
-	public Material Material;
-	/// An array containing the information of the line vertices.
-	public Vector3[] Vertices;
-	/// An array containing the information of the line vertex normals.
-	public Vector3[] Normals;
+public struct LineRendererRef : ISharedComponentData {
+	public Entity Value;
+}
+
+/// <summary>
+/// Buffer containing vertex information
+/// </summary>
+[InternalBufferCapacity(0)]
+public struct BufferableVertex : IBufferElementData {
+	public float3 Value;
 }
 
 /// <summary>
@@ -112,3 +113,6 @@ public struct FreezeAxis : IComponentData {
 	/// The position at which froze each axis.
 	public float3 FreezePos;
 }
+
+[SerializeField]
+public struct CopyTransformFromGameObjectWithUniformScale : IComponentData {}

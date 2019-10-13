@@ -17,39 +17,38 @@ using UnityEngine.Rendering;
 /// - Raúl Vera Ortega 2018
 /// </summary>
 
-[UpdateAfter(typeof(PreLateUpdate))]
-[UpdateAfter(typeof(ThickLineMeshBuilderSystem))]
+[UpdateInGroup(typeof(PresentationSystemGroup))]
+[UpdateAfter(typeof(DynamicMeshBuilderSystem))]
 public class LineRendererSystem : ComponentSystem {
-  List<LineRenderer> rendererList = new List<LineRenderer>();
-  private ComponentGroup _dependency;
-  private int gridLayer;
+  List<RenderMesh> _rendererList = new List<RenderMesh>();
+  EntityQuery _dependencies;
+  private int _gridLayer;
 
-  protected override void OnCreateManager() {
-    _dependency = GetComponentGroup(
-      typeof(Line), typeof(LineRenderer)
+  protected override void OnCreate() {
+    _gridLayer = LayerMask.NameToLayer("Grid");
+    _dependencies = GetEntityQuery(
+      typeof(RenderMesh), typeof(CustomRenderTag)
     );
-    gridLayer = LayerMask.NameToLayer("Grid");
   }
 
   protected override void OnUpdate() {
     Matrix4x4 identityMatrix = UnityEngine.Matrix4x4.identity;
-    EntityManager.GetAllUniqueSharedComponentData<LineRenderer>(rendererList);
-    for (int i = 0; i < rendererList.Count; ++i) {
-      LineRenderer render = rendererList[i];
-      Mesh mesh = render.WorkMesh;
+    EntityManager.GetAllUniqueSharedComponentData<RenderMesh>(_rendererList);
+    for (int i = 0; i < _rendererList.Count; ++i) {
+      RenderMesh renderMesh = _rendererList[i];
+      _dependencies.SetFilter(renderMesh);
 
-      if (mesh == null) continue;
+      if (_dependencies.CalculateEntityCount() > 0) {
+        Mesh mesh = _rendererList[i].mesh;
+        if (mesh == null || mesh.vertexCount == 0) continue;
 
-      var meshIsReady = mesh.vertexCount > 0;
-
-      mesh.vertices = render.Vertices;
-      mesh.normals = render.Normals;
-
-      UnityEngine.Graphics.DrawMesh(
-        mesh, identityMatrix, render.Material, gridLayer
-      );
+        Material material = _rendererList[i].material;
+        UnityEngine.Graphics.DrawMesh(
+          mesh, identityMatrix, material, _gridLayer
+        );
+      }
     }
-    rendererList.Clear();
+    _rendererList.Clear();
   }
 
 }

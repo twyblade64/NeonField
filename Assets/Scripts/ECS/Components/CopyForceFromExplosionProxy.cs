@@ -3,9 +3,11 @@ using Unity.Entities;
 /// <summary>
 /// Tag for the CopyForceFromExplosionSystem
 /// </summary>
+[System.Serializable]
 public struct CopyForceFromExplosion : IComponentData { }
 
 /// <summary>
 /// Wrapper for adding CopyForceFromExplosion component to GameObjects
 /// </summary>
-public class CopyForceFromExplosionComponent : ComponentDataWrapper<CopyForceFromExplosion> { } 
+[UnityEngine.DisallowMultipleComponent]
+public class CopyForceFromExplosionProxy : ComponentDataProxy<CopyForceFromExplosion> { } 

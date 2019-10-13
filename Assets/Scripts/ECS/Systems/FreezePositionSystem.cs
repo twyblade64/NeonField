@@ -14,11 +14,11 @@ using UnityEngine;
 /// - Raúl Vera Ortega 2018
 /// </summary>
 
-[UpdateInGroup(typeof(PhysicUpdate))]
+[UpdateInGroup(typeof(SimulationSystemGroup))]
 public class FreezePositionSystem : JobComponentSystem {
   [BurstCompile]
-  struct FreezePositionJob : IJobProcessComponentData<Position, FreezeAxis> {
-    public void Execute(ref Position position, [ReadOnly] ref FreezeAxis freezeAxis) {
+  struct FreezePositionJob : IJobForEach<Translation, FreezeAxis> {
+    public void Execute(ref Translation position, [ReadOnly] ref FreezeAxis freezeAxis) {
       position.Value = new float3(
         (freezeAxis.FreezeMask & FreezeAxis.AxisMask.X) != 0 ? freezeAxis.FreezePos.x : position.Value.x,
         (freezeAxis.FreezeMask & FreezeAxis.AxisMask.Y) != 0 ? freezeAxis.FreezePos.y : position.Value.y,

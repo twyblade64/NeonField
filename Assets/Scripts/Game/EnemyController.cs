@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 /// <summary>
 /// Class containing basic behaviour of an enemy.
@@ -48,10 +49,7 @@ public class EnemyController : MonoBehaviour {
 		rb = GetComponent<Rigidbody>();
 		player = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
 
-		ForceExplosionController explosion = Instantiate(explosionPrefab, transform.position, Quaternion.identity).GetComponent<ForceExplosionController>();
-		explosion.force = creationForce;
-		explosion.duration = creationDuration;
-		explosion.distance = creationDistance;
+		StartCoroutine(LateExplosionCreation(creationForce, creationDuration, creationDistance));
 	}
 
 	/// <summary>
@@ -69,29 +67,42 @@ public class EnemyController : MonoBehaviour {
 	/// Also destroy self if life reached zero.
 	/// </summary>
 	void OnTriggerEnter(Collider other) {
+		if (life <= 0) return;
 		if (other.CompareTag("Bullet")) {
 			BulletController bullet = other.GetComponent<BulletController>();
 			life -= bullet.damage;
 			Destroy(bullet.gameObject);
 
-			ForceExplosionController explosion = Instantiate(explosionPrefab, transform.position, Quaternion.identity).GetComponent<ForceExplosionController>();
 			if (life > 0) {
-				explosion.force = hitForce;
-				explosion.duration = hitDuration;
-				explosion.distance = hitDistance;
 				Instantiate(particlesPrefab, transform.position, particlesPrefab.transform.rotation);
+				StartCoroutine(LateExplosionCreation(hitForce, hitDuration, hitDistance));
 			} else {
-				explosion.force = deathForce;
-				explosion.duration = deathDuration;
-				explosion.distance = deathDistance;
 				Instantiate(particlesPrefab, transform.position, particlesPrefab.transform.rotation);
 				Instantiate(particlesPrefab, transform.position, particlesPrefab.transform.rotation);
 				Instantiate(particlesPrefab, transform.position, particlesPrefab.transform.rotation);
 				Instantiate(particlesPrefab, transform.position, particlesPrefab.transform.rotation);
 				Instantiate(particlesPrefab, transform.position, particlesPrefab.transform.rotation);
 				Instantiate(particlesPrefab, transform.position, particlesPrefab.transform.rotation);
-				Destroy(gameObject);
+				StartCoroutine(LateExplosionCreationAndDestruction(deathForce, deathDuration, deathDistance));
 			}
 		}
+	}
+
+	IEnumerator LateExplosionCreation(float force, float duration, float distance) {
+		yield return new WaitForEndOfFrame();
+		ForceExplosionController explosion = Instantiate(explosionPrefab, transform.position, Quaternion.identity).GetComponent<ForceExplosionController>();
+		explosion.force = force;
+		explosion.duration = duration;
+		explosion.distance = distance;
+	}
+
+	IEnumerator LateExplosionCreationAndDestruction(float force, float duration, float distance) {
+		enabled = false;
+		yield return new WaitForEndOfFrame();
+		ForceExplosionController explosion = Instantiate(explosionPrefab, transform.position, Quaternion.identity).GetComponent<ForceExplosionController>();
+		explosion.force = force;
+		explosion.duration = duration;
+		explosion.distance = distance;
+		Destroy(gameObject);
 	}
 }

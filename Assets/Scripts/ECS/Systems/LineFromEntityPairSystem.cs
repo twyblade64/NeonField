@@ -13,44 +13,26 @@ using UnityEngine;
 /// - Raúl Vera Ortega 2018
 /// </summary>
 
-[UpdateInGroup(typeof(PhysicUpdate))]
+[UpdateInGroup(typeof(SimulationSystemGroup))]
 public class LineFromEntityPairSystem : JobComponentSystem {
-  public struct Data {
-    public readonly int Length;
-    public ComponentDataArray<Line> lines;
-    [ReadOnly] public ComponentDataArray<EntityPair> entityPairs;
-  }
-
-  [Inject] private Data _data;
-  [Inject][ReadOnly] private ComponentDataFromEntity<Position> _positions;
-
   [BurstCompile]
-  struct LineFromEntitiesJob : IJobParallelFor {
-    public ComponentDataArray<Line> _lines;
-    [ReadOnly] public ComponentDataArray<EntityPair> _entityPairs;
-    [ReadOnly] public ComponentDataFromEntity<Position> _positions;
+  struct LineFromEntitiesJob : IJobForEach<Line, EntityPair> {
+    [ReadOnly] public ComponentDataFromEntity<Translation> _translations;
 
-    public void Execute(int i) {
-      EntityPair pair = _entityPairs[i];
-
-      _lines[i] = new Line {
-        P1 = _positions[pair.E1].Value,
-        P2 = _positions[pair.E2].Value
+    public void Execute(ref Line line, ref EntityPair entityPair)
+    {
+      line = new Line {
+        P1 = _translations[entityPair.E1].Value,
+        P2 = _translations[entityPair.E2].Value,
       };
     }
   }
 
   protected override JobHandle OnUpdate(JobHandle inputDeps) {
-    if (_data.Length == 0)
-      return inputDeps;
-
     LineFromEntitiesJob job = new LineFromEntitiesJob {
-      _lines = _data.lines,
-      _entityPairs = _data.entityPairs,
-      _positions = _positions
+      _translations = GetComponentDataFromEntity<Translation>()
     };
 
-    JobHandle jobHandle = job.Schedule(_data.Length, 64, inputDeps);
-    return jobHandle;
+    return job.Schedule(this, inputDeps);
   }
 }

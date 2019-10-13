@@ -14,25 +14,17 @@ using UnityEngine;
 /// - Raúl Vera Ortega 2018
 /// </summary>
 
-[UpdateInGroup(typeof(PhysicUpdate))]
+[UpdateInGroup(typeof(SimulationSystemGroup))]
+[UpdateBefore(typeof(ForceInfluenceSystem))]
 public class CopyForceFromExplosionSystem : ComponentSystem {
-  public struct Data {
-    public readonly int Length;
-    public ComponentDataArray<ForceGenerator> forceGenerator;
-    [ReadOnly] public ComponentArray<ForceExplosionController> forceExplosion;
-    [ReadOnly] public ComponentDataArray<CopyForceFromExplosion> copyForceFromExplosion;
-  }
-
-  [Inject] private Data m_Data;
-
+  // [SerializeField] ForceExplosionController forceExplosionController;
   protected override void OnUpdate() {
-    for (int i = 0; i < m_Data.Length; ++i) {
-      ForceExplosionController forceExplosionController = m_Data.forceExplosion[i];
-
-      m_Data.forceGenerator[i] = new ForceGenerator {
+    Entities.ForEach((Entity entity, ref ForceGenerator forceGenerator, ref CopyForceFromExplosion copyForceFromExplosion) => {
+      var forceExplosionController = EntityManager.GetComponentObject<ForceExplosionController>(entity);
+      forceGenerator = new ForceGenerator {
         force = forceExplosionController.force,
         distance = forceExplosionController.distance
       };
-    }
+    });
   }
 }

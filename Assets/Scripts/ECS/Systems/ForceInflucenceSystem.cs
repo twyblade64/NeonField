@@ -5,7 +5,6 @@ using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
-using UnityEngine.Experimental.PlayerLoop;
 
 /// <summary>
 /// System used to generate the interactions betwen force generators and recievers.
@@ -17,45 +16,25 @@ using UnityEngine.Experimental.PlayerLoop;
 /// - Raúl Vera Ortega 2018
 /// </summary>
 
-[UpdateInGroup(typeof(PhysicUpdate))]
-[UpdateAfter(typeof(CopyForceFromExplosion))]
-[UpdateAfter(typeof(CopyTransformToGameObject))]
+[UpdateInGroup(typeof(SimulationSystemGroup))]
 public class ForceInfluenceSystem : JobComponentSystem {
-  public struct ForceRecievers {
-    public readonly int Length;
-    public ComponentDataArray<Physical> physical;
-    [ReadOnly] public ComponentDataArray<Position> position;
-  }
-
-  [Inject] private ForceRecievers forceRecievers;
-
-  public struct ForceGenerators {
-    public readonly int Length;
-    [ReadOnly] public ComponentDataArray<Position> position;
-    [ReadOnly] public ComponentDataArray<ForceGenerator> forceGenerator;
-  }
-
-  [Inject] private ForceGenerators forceGenerators;
 
   [BurstCompile]
-  struct ForceInfluenceJob : IJobParallelFor {
-    public ComponentDataArray<Physical> recieverPhysicals;
-    [ReadOnly] public ComponentDataArray<Position> recieverPositions;
-    [ReadOnly] public ComponentDataArray<Position> generatorPositions;
-    [ReadOnly] public ComponentDataArray<ForceGenerator> generatorForces;
+  struct ForceInfluenceJob : IJobForEach<Physical, Translation> {
+    [DeallocateOnJobCompletionAttribute]
+    [ReadOnly] public NativeArray<LocalToWorld> generatorPositions;
+    [DeallocateOnJobCompletionAttribute]
+    [ReadOnly] public NativeArray<ForceGenerator> generatorForces;
     [ReadOnly] public int generatorCount;
 
-    public void Execute(int i) {
-      Position position = recieverPositions[i];
-      Physical physical = recieverPhysicals[i];
-
+    public void Execute(ref Physical physical, [ReadOnly] ref Translation position) {
       float3 forceSum = new float3(0, 0, 0);
 
       for (int j = 0; j < generatorCount; ++j) {
-        Position generatorPosition = generatorPositions[j];
+        float3 generatorPosition = generatorPositions[j].Position;
         ForceGenerator forceGenerator = generatorForces[j];
 
-        float3 distance = position.Value - generatorPosition.Value;
+        float3 distance = position.Value - generatorPosition;
         float distanceMagSqr = math.lengthsq(distance);
         if (distanceMagSqr < forceGenerator.distance * forceGenerator.distance) {
 
@@ -65,26 +44,45 @@ public class ForceInfluenceSystem : JobComponentSystem {
         }
       }
 
-      recieverPhysicals[i] = new Physical {
+      physical = new Physical {
         Force = physical.Force + forceSum,
         InverseMass = physical.InverseMass
       };
+
     }
   }
 
+  EntityQuery _forceGeneratorsQuery;
+  EntityQuery _physicalQuery;
+
+  protected override void OnCreate() {
+    _forceGeneratorsQuery = GetEntityQuery(new EntityQueryDesc {
+      All = new [] {
+        ComponentType.ReadOnly<LocalToWorld>(),
+        ComponentType.ReadOnly<ForceGenerator>()
+      }
+    });
+
+    _physicalQuery = GetEntityQuery(new EntityQueryDesc {
+      All = new [] {
+        ComponentType.ReadWrite<Physical>(),
+        ComponentType.ReadOnly<Translation>()
+      }
+    });
+
+  }
+
   protected override JobHandle OnUpdate(JobHandle inputDeps) {
-    if (forceRecievers.Length == 0 || forceGenerators.Length == 0)
-      return inputDeps;
+    var generatorPositions = _forceGeneratorsQuery.ToComponentDataArray<LocalToWorld>(Allocator.TempJob);
+    var generatorForces = _forceGeneratorsQuery.ToComponentDataArray<ForceGenerator>(Allocator.TempJob);
 
     ForceInfluenceJob job = new ForceInfluenceJob {
-      recieverPhysicals = forceRecievers.physical,
-      recieverPositions = forceRecievers.position,
-      generatorPositions = forceGenerators.position,
-      generatorForces = forceGenerators.forceGenerator,
-      generatorCount = forceGenerators.Length
+      generatorPositions = generatorPositions,
+      generatorForces = generatorForces,
+      generatorCount = generatorPositions.Length
     };
 
-    JobHandle jobHandle = job.Schedule(forceRecievers.Length, 64, inputDeps);
+    JobHandle jobHandle = job.Schedule(_physicalQuery, inputDeps);
     return jobHandle;
   }
 }

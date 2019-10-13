@@ -159,6 +159,7 @@ public class PlayerController : MonoBehaviour {
 	/// </summary>
 	/// <param name="dir">The direction to shoot the bullet. It is expected to be a normalized vector.</param>
 	IEnumerator Shoot(Vector2 dir) {
+		yield return new WaitForEndOfFrame();
 		BulletController bc = Instantiate(bulletPrefab).GetComponent<BulletController>();
 		bc.transform.position = transform.position +
 			new Vector3(dir.x, 0, dir.y) * shootVSep +

@@ -5,7 +5,6 @@ using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
-using UnityEngine.Experimental.PlayerLoop;
 
 /// <summary>
 /// Slow-down the velocity of the entities.
@@ -14,14 +13,14 @@ using UnityEngine.Experimental.PlayerLoop;
 /// - Raúl Vera Ortega 2018
 /// </summary>
 
-[UpdateInGroup(typeof(PhysicUpdate))]
+[UpdateInGroup(typeof(SimulationSystemGroup))]
 [UpdateAfter(typeof(ForceVelocitySystem))]
 public class VelocityDampSystem : JobComponentSystem {
   /// Velocities bellow this value will be rounded down to 0 to avoid float-point imprecision
   public const float STABILITY_THERESHOLD = 0.0001f;
 
   [BurstCompile]
-  struct VelocityDampJob : IJobProcessComponentData<Velocity, Damper> {
+  struct VelocityDampJob : IJobForEach<Velocity, Damper> {
     public void Execute(ref Velocity vel, [ReadOnly] ref Damper damper) {
       float3 v = vel.Value * damper.Value;
       if (math.lengthsq(v) > STABILITY_THERESHOLD)
